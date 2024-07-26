@@ -1,0 +1,41 @@
+body{
+    background: linear-gradient(135deg, #26024d, #3ed2f7);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+
+.about-us-container{
+    padding: 2%;
+    margin: 2%;
+    background-color: #41836d;
+    color: white;
+    font-size: 1.2vw;
+    border-radius: 2vw;
+    display: flex;
+    flex-direction:row;
+}
+
+
+
+.title{
+    color: transparent;
+    background: linear-gradient(135deg,#68036b, #f1e6de);
+    -webkit-background-clip: text;
+    background-clip: text; 
+    font-size: 2.5vw;
+}
+
+.dataset-button{
+    background: linear-gradient(135deg, #68036b, #fa730c);
+    height: 5vw;
+    width: 20vw;
+    border: none;
+    border-radius: 2vw;
+    font-size: 1.5vw;
+    color: white;
+    margin-left: 50;
+}
