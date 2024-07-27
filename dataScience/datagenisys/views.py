@@ -5,3 +5,6 @@ def home_page(request):
 
 def about_us(request):
      return render(request,'datagenisys/about_us.html')
+
+def get_form(request):
+    return render(request,'datagenisys/form.html')

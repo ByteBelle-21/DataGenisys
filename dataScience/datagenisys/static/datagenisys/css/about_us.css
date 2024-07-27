@@ -1,3 +1,15 @@
+@keyframes loadFromTop {
+    0% {
+        opacity: 0;
+        transform: translateY(-100px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
 body{
     background: linear-gradient(135deg, #26024d, #3ed2f7);
     height: 100vh;
@@ -8,6 +20,11 @@ body{
 }
 
 
+.about-us-container,.title,.dataset-button,.upload-form{
+    opacity: 0;
+    animation: loadFromTop 1s ease-out forwards;
+}
+
 .about-us-container{
     padding: 2%;
     margin: 2%;
@@ -17,12 +34,14 @@ body{
     border-radius: 2vw;
     display: flex;
     flex-direction:row;
+    justify-content: center;
+    align-items: center;
 }
 
 
 
 .title{
-    color: transparent;
+    color: white;
     background: linear-gradient(135deg,#68036b, #f1e6de);
     -webkit-background-clip: text;
     background-clip: text; 
@@ -30,12 +49,67 @@ body{
 }
 
 .dataset-button{
-    background: linear-gradient(135deg, #68036b, #fa730c);
+    margin: 2%;
+    background: linear-gradient(135deg, #40045c, #f5206a);
     height: 5vw;
-    width: 20vw;
+    width: 50vw;
     border: none;
     border-radius: 2vw;
     font-size: 1.5vw;
     color: white;
-    margin-left: 50;
+    text-align: center;
+    line-height: 5vw;
+    cursor: pointer;
+}
+
+.dataset-button:hover{ 
+    box-shadow: 0 0 20px rgb(206, 204, 204); 
+}
+
+.upload-form{
+    display: none;
+    position: fixed;
+    width: 30vw;
+    padding: 1%;
+    border-radius: 2vw;
+    background-color: white;
+    color: #26024d;
+    
+}
+
+.form-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+ 
+    
+}
+
+.form-button{
+    margin: 1vw;
+    padding: 0.7vw;
+    width: 10vw;
+    font-size: 1.1vw;
+    background: linear-gradient(135deg, #40045c, #f5206a);
+    border: none;
+    border-radius: 1.5vw;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+}
+
+.button-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+#form:checked+.dataset-button + .upload-form {
+    display: block;
+}
+
+#form:checked+.dataset-button+.form-button {
+    display: block;
 }

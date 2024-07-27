@@ -24,25 +24,25 @@ body{
         font-size: 0vw;
     }
     to{
-        font-size: clamp(1rem,10vw,5.5rem);
+        font-size: clamp(1rem,10vw,6rem);
     }
 }
 
 
 .title{
     font-family:'Courier New', Courier, monospace;
-    font-weight: bolder;
+    font-weight:1000;
     color: transparent;
-    background: linear-gradient(135deg, #03a1fc, #03fcc2);
+    background: linear-gradient(135deg, #4ab3f1, #03fcc2);
     background-clip: text; 
-    font-size: clamp(1rem,10vw,5.5rem);
+    font-size: clamp(1rem,10vw,6rem);
     animation: growText 2s ease-in-out;
 }
 
 .subtitle{
     font-family:'Courier New', Courier, monospace;
     font-weight: bolder;
-    font-size: 1.5vw;
+    font-size: 1.7vw;
     color: white;
 }
 
@@ -68,10 +68,13 @@ body{
     background: linear-gradient(135deg, #68036b, #fa730c);
     font-size: 1.5vw;
     animation: buttonSize 2s ease-in-out infinite;
+    cursor: pointer;
+    
 }
 
 .start-button:hover{
     text-decoration: none;
     transform: scale(1.1) ;
+    box-shadow: 0 0 20px rgb(206, 204, 204); 
     animation: none;
 }
