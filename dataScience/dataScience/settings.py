@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-rs-)^9j_y9ocj@xb*y!t)l0tj75t%_8+6ef_rso**0ffr1m&_g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -69,6 +69,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'dataScience.wsgi.application'
+
+
+CSRF_TRUSTED_ORIGINS =[
+    'https://jrg814-8000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai',
+]
 
 
 # Database
