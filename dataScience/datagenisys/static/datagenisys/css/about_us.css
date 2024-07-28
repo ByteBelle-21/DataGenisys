@@ -12,14 +12,17 @@
 
 body{
     background: linear-gradient(135deg, #26024d, #3ed2f7);
-    height: 100vh;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
 }
 
+.body-initial{
+    height: 100vw;
+    overflow: hidden;
+}
 
-.about-us-container,.title,.dataset-button,.upload-form{
+
+.about-us-container,.title,.dataset-button,.upload-form,.model-container{
     opacity: 0;
     animation: loadFromTop 1s ease-out forwards;
 }
@@ -36,8 +39,6 @@ body{
     justify-content: center;
     align-items: center;
 }
-
-
 
 .title{
     color: white;
@@ -105,6 +106,10 @@ body{
     cursor: pointer;
 }
 
+.form-button:hover{ 
+    box-shadow: 0 0 20px black; 
+}
+
 .button-container{
     display: flex;
     flex-direction: row;
@@ -117,4 +122,28 @@ body{
 
 #form:checked+.dataset-button+.form-button {
     display: block;
+}
+
+.model-container{
+    padding: 2%;
+    margin: 2%;
+    color: white;
+    display: flex;
+    font-size: 1.2vw;
+    flex-direction: column;  
+}
+
+.model-container-initial{
+    padding: 2%;
+    margin: 2%;
+    color: white;
+    display: flex;
+    font-size: 1.2vw;
+    flex-direction: column;  
+    justify-content:center;
+    align-items:center;
+}
+
+th,tr,td{
+    padding:0.5vw;
 }
