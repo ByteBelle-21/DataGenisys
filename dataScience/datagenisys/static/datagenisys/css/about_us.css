@@ -1,15 +1,3 @@
-@keyframes loadFromTop {
-    0% {
-        opacity: 0;
-        transform: translateY(-100px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-
 body{
     background: linear-gradient(135deg, #26024d, #3ed2f7);
     display: flex;
@@ -21,6 +9,16 @@ body{
     overflow: hidden;
 }
 
+@keyframes loadFromTop {
+    0% {
+        opacity: 0;
+        transform: translateY(-100px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 .about-us-container,.title,.dataset-button,.upload-form,.model-container{
     opacity: 0;
@@ -41,7 +39,7 @@ body{
 }
 
 .title{
-    color: white;
+    color: transparent;
     background: linear-gradient(135deg,#68036b, #f1e6de);
     -webkit-background-clip: text;
     background-clip: text; 
@@ -69,12 +67,15 @@ body{
 .upload-form{
     display: none;
     position: fixed;
+    top: 10%;
     width: 30vw;
+    max-height: 80vh;
     padding: 1%;
     border-radius: 2vw;
     background-color: white;
     color: #26024d;
     border: 0.2vw solid  #640872;
+    z-index: 10000;
 }
 
 .form-container{
@@ -82,7 +83,6 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: center;
-  
 }
 
 
@@ -91,7 +91,10 @@ body{
     border-radius: 1vw;
     font-size: 1vw;
     padding: 0.5vw;
+    width: 20vw;
 }
+
+
 
 .form-button{
     margin: 1vw;
@@ -125,12 +128,14 @@ body{
 }
 
 .model-container{
+    position: relative;
     padding: 2%;
     margin: 2%;
     color: white;
     display: flex;
     font-size: 1.2vw;
-    flex-direction: column;  
+    flex-direction: column;
+    z-index: 1;
 }
 
 .model-container-initial{
@@ -143,6 +148,14 @@ body{
     justify-content:center;
     align-items:center;
 }
+
+
+
+.input-button{
+    background:  #f4f3f3;
+    color: #26024d;
+}
+
 
 th,tr,td{
     padding:0.5vw;

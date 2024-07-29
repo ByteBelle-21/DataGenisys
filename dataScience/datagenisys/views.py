@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
@@ -20,10 +21,9 @@ def get_dataset(request):
             false_target = True 
         got_data = True
         column_info = []
+        data_cleaning = {}
         for col, dtype in dataframe.dtypes.items():
             column_info.append((col,dtype,dataframe[col].isnull().sum()))
-    
-
         context = {
             'false_target': false_target,
             'got_data': got_data,
@@ -31,3 +31,4 @@ def get_dataset(request):
         }
         return render(request, 'datagenisys/about_us.html', context)
     return render(request, 'datagenisys/about_us.html', {'got_data': got_data})
+
