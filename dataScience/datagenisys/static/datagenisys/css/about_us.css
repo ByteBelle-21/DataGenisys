@@ -66,7 +66,7 @@ body{
 
 .upload-form{
     display: none;
-    position: fixed;
+    position:fixed;
     top: 10%;
     width: 30vw;
     max-height: 80vh;
@@ -128,14 +128,13 @@ body{
 }
 
 .model-container{
-    position: relative;
     padding: 2%;
     margin: 2%;
     color: white;
     display: flex;
     font-size: 1.2vw;
     flex-direction: column;
-    z-index: 1;
+    z-index: -1;
 }
 
 .model-container-initial{

@@ -5,7 +5,6 @@
     <link rel="stylesheet" type="text/css" href="{% static 'datagenisys/css/about_us.css' %}">
 </head>
 <body class="{% if not got_data or false_target %}body-initial{% endif %}">
-    <div>
         <div class="about-us-container">
             <div class="about-us">
                 <H1 class="title">Welcome to Data Predictify </H1>
@@ -35,7 +34,7 @@
                             which represent different categories (e.g., 'Category 1', 'Category 2'). 
                             Separate each column name with a comma.
                             If there are no such columns, please input 'No'.</p>
-                        <input type="text" name="is_category" class="text-box" placeholder="column1, column5, .." required>
+                        <input type="text" name="categoricalNumeric" class="text-box" placeholder="column1, column5, .." required>
                         <div class="button-container">
                             <input type="submit" value="Submit" class="form-button">
                             <input for="form" type="reset" value="Cancel" class="form-button" onClick="document.getElementById('form').checked = false;"></input>
@@ -83,6 +82,6 @@
 
             {% endif %}
         </div>
-    </div> 
+   
     
 </body> 
