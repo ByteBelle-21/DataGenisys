@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-
+from sklearn.impute import SimpleImputer
 
 def home_page(request):
     return render(request,'datagenisys/home_page.html')
@@ -16,6 +16,7 @@ def get_dataset(request):
         csv_file = request.FILES['csvFile']
         target_variable = request.POST['targetVariable']
         categorical_columns = request.POST['categoricalNumeric']
+        Numeric_categorical_columns = []
         if(categorical_columns!="No"):
             Numeric_categorical_columns = [column.strip() for column in categorical_columns.split(',')]
         dataframe = pd.read_csv(csv_file)
@@ -23,36 +24,51 @@ def get_dataset(request):
         if(target_variable  not in dataframe.columns):
             false_target = True 
         got_data = True
-        column_info = []
+        data_initial_info = []
         data_cleaning_steps = []
         for col, dtype in dataframe.dtypes.items():
-            column_info.append((col,dtype,dataframe[col].isnull().sum()))  
-            if dtype== object:
+            data_initial_info.append((col,dtype,dataframe[col].isnull().sum()))  
+            if dtype == object:
                 if(dataframe[col]=="").sum() ==0 and dataframe[col].isnull().sum() > 0:
                     dataframe[col] = dataframe[col].replace(np.nan,'none')
                     data_cleaning_steps.append(f"pandas detected None string as NaN in {col} column. So replaced None with none")     
-                elif (dataframe[col]=="").sum()/len(dataframe[col]) < 0.5:
+                elif (dataframe[col]=="").sum()/len(dataframe[col]) * 100 <= 0.3 and (dataframe[col]=="").sum()/len(dataframe[col]) * 100 > 30 :
+                    imputer = SimpleImputer(strategy ='most_frequent')
+                    dataframe[col] = imputer.fit_transform(dataframe[[col]]).ravel()
+                    data_cleaning_steps.append(f"Replaced the missing values in {col} column with most frequent value")
+                elif (dataframe[col]=="").sum()/len(dataframe[col]) > 0.3 and (dataframe[col]=="").sum()/len(dataframe[col]) < 0.5:
                     dataframe[col] = dataframe[col].replace(np.nan,'Unknown')
                     data_cleaning_steps.append(f"Replaced the missing values in {col} column with 'Unknown'")
                 elif (dataframe[col]=="").sum()/len(dataframe[col]) >= 0.5 :
                     dataframe = dataframe.drop(col,axis=1)
                     data_cleaning_steps.append(f"The {col} had more than 50% missing values and it has been dropped.")
             elif dtype == int or dtype == float : 
-                if (dataframe[col]=="").sum()/len(dataframe[col]) >= 0.5 :
+                if dataframe[col].isnull().sum()/len(dataframe[col]) >= 0.5 :
                     dataframe = dataframe.drop(col,axis=1)
                     data_cleaning_steps.append(f"The {col} had more than 50% missing values and it has been dropped.")
                 elif col in Numeric_categorical_columns:
-                     pass
-                else:
+                    if dataframe[col].isnull().sum()/len(dataframe[col]) < 0.5 and dataframe[col].isnull().sum()/len(dataframe[col]) >0.3 :
+                        replacer = dataframe[col].max() + 1
+                        dataframe[col] = dataframe[col].replace(np.nan,replacer)
+                        data_cleaning_steps.append(f"Replaced the missing values in {col} column with {replacer} value. This value indiates that data is missing")
+                    elif dataframe[col].isnull().sum()/len(dataframe[col]) <= 0.3 and dataframe[col].isnull().sum()/len(dataframe[col]) > 0:
+                        imputer = SimpleImputer(strategy ='most_frequent')
+                        dataframe[col] = imputer.fit_transform(dataframe[[col]]).ravel()
+                        data_cleaning_steps.append(f"Replaced the missing values in {col} column with most frequent value")
+                elif dataframe[col].isnull().sum()/len(dataframe[col]) < 0.5 and dataframe[col].isnull().sum()/len(dataframe[col]) > 0:
                     col_mean = dataframe[col].mean()
                     dataframe[col] = dataframe[col].replace(np.nan, col_mean)
+                    data_cleaning_steps.append(f"Replaced the missing values in {col} column with column mean")
 
-
+        cleaned_dataset = []
+        for col, dtype in dataframe.dtypes.items():
+            cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))
         context = {
             'false_target': false_target,
             'got_data': got_data,
-            'column_info':column_info,
+            'data_initial_info':data_initial_info,
             'data_cleaning_steps' : data_cleaning_steps,
+            'cleaned_dataset':cleaned_dataset,
         }
         return render(request, 'datagenisys/about_us.html', context)
     return render(request, 'datagenisys/about_us.html', {'got_data': got_data})

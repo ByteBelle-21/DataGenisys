@@ -50,7 +50,7 @@
             {% elif not got_data %}
                 <p >Your model will be generated and displayed here after you upload your Dataset and specify the Target variable.</p>
             {% else %}
-                <H2>Data wrangling </H2>
+                <H2>Dataset Overview </H2>
                 <p>This table provides an overview of the dataset you have uploaded. It includes the following details for each column:</p>
                 <ul>
                     <li>Column Name: The name of the column in the dataset.</li>
@@ -70,7 +70,34 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for col, dtype,null_values in column_info %}
+                        {% for col, dtype,null_values in data_initial_info %}
+                            <tr>
+                                <td id="table-cell">{{ col }}</td>
+                                <td id="table-cell">{{ dtype }}</td>
+                                <td id="table-cell">{{null_values}}</td>
+                            </tr> 
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <H2>Post-Cleanup Dataset Overview</H2>
+                <p>We have successfully cleaned the dataset you uploaded. Below is an overview of the cleaned dataset.
+                    This information is crucial for building and validating the prediction model, ensuring the accuracy and reliability of the results.
+                    The following steps were taken to prepare the data for accurate and reliable predictions:</p>
+                <ul>
+                    {% for cleaning_step in data_cleaning_steps %}
+                    <li> {{cleaning_step}} </li> 
+                    {% endfor %}
+                </ul>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th id="table-cell">Column</th>
+                            <th id="table-cell">Data Type</th>
+                            <th id="table-cell"> No. of invalid values</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for col, dtype,null_values in cleaned_dataset %}
                             <tr>
                                 <td id="table-cell">{{ col }}</td>
                                 <td id="table-cell">{{ dtype }}</td>
