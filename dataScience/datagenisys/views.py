@@ -4,6 +4,10 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import LabelEncoder
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
 def home_page(request):
     return render(request,'datagenisys/home_page.html')
 
@@ -60,21 +64,39 @@ def get_dataset(request):
                     dataframe[col] = dataframe[col].replace(np.nan, col_mean)
                     data_cleaning_steps.append(f"Replaced the missing values in {col} column with column mean")
 
-        
-    
         for col, dtype in dataframe.dtypes.items():
-            if dtype == object and len(dataframe[col].unique()) < len(dataframe[col])/2:
-                encoder = LabelEncoder()
-                dataframe[col] = encoder.fit_transform(dataframe[col])
-                dataframe[col] = dataframe[col].astype(int)
-                encoding_steps = []
-                for i, encoded in enumerate(encoder.classes_):
-                    encoding_steps.append(f"{i} for {encoded}")
-                data_cleaning_steps.append(f"Converted catogorical data in {col} column into numeric data.The mapping of your categorical values is as follows:{dict(enumerate(encoder.classes_))}")
+            if dtype == object:
+                if len(dataframe[col].unique()) < len(dataframe[col]):
+                    encoder = LabelEncoder()
+                    dataframe[col] = encoder.fit_transform(dataframe[col])
+                    dataframe[col] = dataframe[col].astype(int)
+                    data_cleaning_steps.append(f"Converted catogorical data in {col} column into numeric data.The mapping of your categorical values is as follows:{dict(enumerate(encoder.classes_))}")
+                else:
+                    dataframe = dataframe.drop(col,axis=1)
+                    data_cleaning_steps.append(f"Droped column {col}, beacuse it contains either unique identifiers or random data.") 
+            elif dtype == int or dtype == float:
+                # find more efficient method here
+                if len(dataframe[col].unique()) == len(dataframe[col]) and (dataframe[col].max() - dataframe[col].min()) >= len(dataframe[col]) -1 :
+                    dataframe = dataframe.drop(col,axis=1)
+                    data_cleaning_steps.append(f"Droped column {col}, beacuse it contains either unique identifiers or random data.")
+                else:
+                    bins = np.linspace(dataframe[col].min(),dataframe[col].max(),6)
+                    labels =[f'{int(bins[i])}-{int(bins[i+1])}' for i in range(len(bins)-1)]
+                    dataframe["temp_col"] = dataframe[col]
+                    dataframe[col] = pd.cut(dataframe["temp_col"],bins=bins,labels=labels,include_lowest = True)
+                    data_cleaning_steps.append(f"Transformed column '{col}' by binning with {len(bins) - 1} bins: {', '.join(labels)}.")
+                 
+            #elif dtype == datetime:
+            #elif dtype == bool:
 
-        cleaned_dataset = []    
+
+
+
+        cleaned_dataset = []  
         for col, dtype in dataframe.dtypes.items():
-            cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))
+            cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))  
+
+
 
         
        
