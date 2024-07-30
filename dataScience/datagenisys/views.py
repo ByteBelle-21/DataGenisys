@@ -3,7 +3,7 @@ import numpy as np
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from sklearn.impute import SimpleImputer
-
+from sklearn.preprocessing import LabelEncoder
 def home_page(request):
     return render(request,'datagenisys/home_page.html')
 
@@ -60,9 +60,24 @@ def get_dataset(request):
                     dataframe[col] = dataframe[col].replace(np.nan, col_mean)
                     data_cleaning_steps.append(f"Replaced the missing values in {col} column with column mean")
 
-        cleaned_dataset = []
+        
+    
+        for col, dtype in dataframe.dtypes.items():
+            if dtype == object and len(dataframe[col].unique()) < len(dataframe[col])/2:
+                encoder = LabelEncoder()
+                dataframe[col] = encoder.fit_transform(dataframe[col])
+                dataframe[col] = dataframe[col].astype(int)
+                encoding_steps = []
+                for i, encoded in enumerate(encoder.classes_):
+                    encoding_steps.append(f"{i} for {encoded}")
+                data_cleaning_steps.append(f"Converted catogorical data in {col} column into numeric data.The mapping of your categorical values is as follows:{dict(enumerate(encoder.classes_))}")
+
+        cleaned_dataset = []    
         for col, dtype in dataframe.dtypes.items():
             cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))
+
+        
+       
         context = {
             'false_target': false_target,
             'got_data': got_data,
@@ -70,6 +85,7 @@ def get_dataset(request):
             'data_cleaning_steps' : data_cleaning_steps,
             'cleaned_dataset':cleaned_dataset,
         }
+
         return render(request, 'datagenisys/about_us.html', context)
     return render(request, 'datagenisys/about_us.html', {'got_data': got_data})
 
