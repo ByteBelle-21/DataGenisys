@@ -2,8 +2,8 @@ from sklearn.preprocessing import LabelEncoder
 import pandas as pd
 
 
-
 def category_encoder(df, cleaning_steps,categorical_columns):
+    encoded_value_map = {}
     for col, dtype in df.dtypes.items():
         # If a column contains only one unique value across all rows
         if df[col].nunique() == 1:
@@ -28,17 +28,19 @@ def category_encoder(df, cleaning_steps,categorical_columns):
                     df[col] = encoder.fit_transform(df[col])
                     df[col] = df[col].astype(int)
                     categorical_columns.append(col)
+                    encoded_value_map[col] = dict(enumerate(encoder.classes_))
                     cleaning_steps.append(f"Converted catogorical data in {col} column into numeric data.The mapping of your categorical values is as follows:{dict(enumerate(encoder.classes_))}")
                 # If column contains all unique string values
                 elif df[col].nunique() == len(df[col]):
                     df = df.drop(col,axis=1)
                     cleaning_steps.append(f"Dropped column {col}, because it contains either unique identifiers or random data.")
         # If column contains boolean  data
-        elif dtype == bool:
+        elif dtype == bool or dtype == 'category':
             encoder = LabelEncoder()
             df[col] = encoder.fit_transform(df[col])
             df[col] = df[col].astype(int)
             categorical_columns.append(col)
+            encoded_value_map[col] = dict(enumerate(encoder.classes_))
             cleaning_steps.append(f"Converted catogorical data in {col} column into numeric data.The mapping of your categorical values is as follows:{dict(enumerate(encoder.classes_))}")
        
-    return df,cleaning_steps,categorical_columns
+    return df,cleaning_steps,categorical_columns,encoded_value_map
