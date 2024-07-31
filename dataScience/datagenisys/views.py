@@ -37,7 +37,7 @@ def get_dataset(request):
         # Handle the missing values int the dataframe
         dataframe,data_cleaning_steps = NaN_handler(dataframe,Numeric_categorical_columns, data_cleaning_steps)
         dataframe, data_cleaning_steps,Numeric_categorical_columns = category_encoder(dataframe,data_cleaning_steps,Numeric_categorical_columns)
-        print(Numeric_categorical_columns)
+        
         cleaned_dataset = []  
         for col, dtype in dataframe.dtypes.items():
             cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))  
