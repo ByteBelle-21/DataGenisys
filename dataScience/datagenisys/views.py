@@ -2,12 +2,10 @@ import pandas as pd
 import numpy as np
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from sklearn.impute import SimpleImputer
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
 from .nan_handler import NaN_handler
 from .data_encoder import category_encoder
+from .binning import column_bins
+from .data_cleaning import df_cleaning
 
 def home_page(request):
     return render(request,'datagenisys/home_page.html')
@@ -36,16 +34,16 @@ def get_dataset(request):
 
         # Handle the missing values int the dataframe
         dataframe,data_cleaning_steps = NaN_handler(dataframe,Numeric_categorical_columns, data_cleaning_steps)
-        dataframe, data_cleaning_steps,Numeric_categorical_columns = category_encoder(dataframe,data_cleaning_steps,Numeric_categorical_columns)
-        
+        # Drop the columns which contains IDs or random data
+        dataframe, data_cleaning_steps = df_cleaning(dataframe,data_cleaning_steps)
+        # Store the data into bins except the provided categorical columns as they are already grouped together
+        dataframe, data_cleaning_steps = column_bins(dataframe,Numeric_categorical_columns,data_cleaning_steps)
+        # Encode the data into integer data type
+        dataframe, data_cleaning_steps,Numeric_categorical_columns,data_encoding_map = category_encoder(dataframe,data_cleaning_steps,Numeric_categorical_columns)
         cleaned_dataset = []  
         for col, dtype in dataframe.dtypes.items():
             cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))  
 
-
-
-        
-       
         context = {
             'false_target': false_target,
             'got_data': got_data,
