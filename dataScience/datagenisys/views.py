@@ -6,6 +6,8 @@ from .nan_handler import NaN_handler
 from .data_encoder import category_encoder
 from .binning import column_bins
 from .data_cleaning import df_cleaning
+from .graphs import graph_generator
+import json
 
 def home_page(request):
     return render(request,'datagenisys/home_page.html')
@@ -54,13 +56,15 @@ def get_dataset(request):
             else:
                 graph_df[col] = dataframe[col]
 
-        print(graph_df.dtypes)
-        print(dataframe.dtypes)
-
         cleaned_dataset = []  
         for col, dtype in dataframe.dtypes.items():
             cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))  
 
+        graph_df_dict = graph_df.to_dict(orient='list')
+        temp_df_dict = temp_df.to_dict(orient='list')
+        request.session['graph_df_dict'] = json.dumps(graph_df_dict)
+        request.session['target_variable'] = target_variable
+        request.session['temp_df_dict'] = json.dumps(temp_df_dict)
         context = {
             'false_target': false_target,
             'got_data': got_data,
@@ -72,3 +76,18 @@ def get_dataset(request):
         return render(request, 'datagenisys/about_us.html', context)
     return render(request, 'datagenisys/about_us.html', {'got_data': got_data})
 
+
+
+def get_graphs(request):
+    graph_df_json = request.session.get('graph_df_dict', None)
+    target_variable = request.session.get('target_variable')
+    temp_df_json = request.session.get('temp_df_dict', None)
+    graph_df_dict = json.loads(graph_df_json)
+    temp_df_dict = json.loads(temp_df_json)
+    graph_df = pd.DataFrame(graph_df_dict)
+    temp_df = pd.DataFrame(temp_df_dict)
+    graph_list =  graph_generator(graph_df, target_variable, temp_df)
+    context = {
+            'graph_list': graph_list,
+        }
+    return render(request, 'datagenisys/column_graphs.html', context)

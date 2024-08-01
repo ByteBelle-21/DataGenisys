@@ -1,3 +1,5 @@
 django
 pandas
 scikit-learn
+seaborn
+matplotlib

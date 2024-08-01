@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
 import pandas as pd
 import numpy as np
+import warnings
 
 def column_bins(df,categorical_columns,cleaning_steps):
+    warnings.filterwarnings('ignore', category=UserWarning, module='pandas')
     for col, dtype in df.dtypes.items():
         if col not in categorical_columns:
             # If the column represents datetime data

@@ -159,3 +159,18 @@ body{
 th,tr,td{
     padding:0.5vw;
 }
+
+.graph-button{
+    margin: 2%;
+    background: linear-gradient(135deg, #40045c, #f5206a);
+    padding: 2vw;
+    height: 5vw;
+    width: 50vw;
+    border: none;
+    border-radius: 2vw;
+    font-size: 1.5vw;
+    color: white;
+    text-align: center;
+    line-height: 5vw;
+    cursor: pointer;
+}

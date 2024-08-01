@@ -1,0 +1,13 @@
+{%load static%}
+<!DOCTYPE html>
+<head>
+    <title> Graph page </title>
+    <link rel="stylesheet" type="text/css" href="{% static 'datagenisys/css/graphs.css' %}">
+</head>
+<body>
+    <div class="graph-container">
+        {% for graph in graph_list%}
+        <img src={{graph}} alt='plot'>
+        {% endfor %}
+    </div> 
+</body> 

@@ -1,0 +1,13 @@
+body{
+    background:  #26024d;
+    display: flex;
+    flex-direction: column;
+    height: 100vw;
+}
+
+.graph-container{
+    padding: 2vw;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 20px;
+}
