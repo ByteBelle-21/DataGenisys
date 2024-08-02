@@ -106,10 +106,16 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                <a class="graph-button" href="{% url 'get_graphs' %}"> Show Graphs </a>
-            {% endif %}
-            
+                <H2> Graphs Overview </H2>
+                <div class="graph-container">
+                        {% for graph in graph_urls %}
+                        <img src={{graph}}>
+                        {% endfor %}
+                    
+                </div>
+            {% endif %} 
         </div>
+        
         
             
      

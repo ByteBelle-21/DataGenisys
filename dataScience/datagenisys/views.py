@@ -41,7 +41,7 @@ def get_dataset(request):
         
         temp_df = pd.DataFrame()
         for col, dtype in dataframe.dtypes.items():
-            if (dtype==int or dtype== float) and col not in Numeric_categorical_columns:
+            if (dtype==int or dtype== float) and col not in Numeric_categorical_columns and dataframe[col].nunique()< len(dataframe[col]):
                 temp_df[col] = dataframe[col]
 
         # Store the data into bins except the provided categorical columns as they are already grouped together
@@ -60,17 +60,21 @@ def get_dataset(request):
         for col, dtype in dataframe.dtypes.items():
             cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))  
 
-        graph_df_dict = graph_df.to_dict(orient='list')
-        temp_df_dict = temp_df.to_dict(orient='list')
-        request.session['graph_df_dict'] = json.dumps(graph_df_dict)
-        request.session['target_variable'] = target_variable
-        request.session['temp_df_dict'] = json.dumps(temp_df_dict)
+        graph_urls = []
+        for col in graph_df:
+            if col != target_variable:
+                if col in temp_df.columns :
+                    graph_urls.append(graph_generator(graph_df,col,target_variable,True))
+                else:
+                    graph_urls.append(graph_generator(graph_df,col,target_variable,False))
+
         context = {
             'false_target': false_target,
             'got_data': got_data,
             'data_initial_info':data_initial_info,
             'data_cleaning_steps' : data_cleaning_steps,
             'cleaned_dataset':cleaned_dataset,
+            'graph_urls':graph_urls
         }
 
         return render(request, 'datagenisys/about_us.html', context)
@@ -78,16 +82,4 @@ def get_dataset(request):
 
 
 
-def get_graphs(request):
-    graph_df_json = request.session.get('graph_df_dict', None)
-    target_variable = request.session.get('target_variable')
-    temp_df_json = request.session.get('temp_df_dict', None)
-    graph_df_dict = json.loads(graph_df_json)
-    temp_df_dict = json.loads(temp_df_json)
-    graph_df = pd.DataFrame(graph_df_dict)
-    temp_df = pd.DataFrame(temp_df_dict)
-    graph_list =  graph_generator(graph_df, target_variable, temp_df)
-    context = {
-            'graph_list': graph_list,
-        }
-    return render(request, 'datagenisys/column_graphs.html', context)
+
