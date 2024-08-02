@@ -5,7 +5,6 @@ from django.http import HttpResponse
 from .nan_handler import NaN_handler
 from .data_encoder import category_encoder
 from .binning import column_bins
-from .data_cleaning import df_cleaning
 from .graphs import graph_generator
 import json
 
@@ -36,42 +35,35 @@ def get_dataset(request):
 
         # Handle the missing values int the dataframe
         dataframe,data_cleaning_steps = NaN_handler(dataframe,Numeric_categorical_columns, data_cleaning_steps)
-        # Drop the columns which contains IDs or random data
-        dataframe, data_cleaning_steps = df_cleaning(dataframe,data_cleaning_steps)
-        
-        temp_df = pd.DataFrame()
-        for col, dtype in dataframe.dtypes.items():
-            if (dtype==int or dtype== float) and col not in Numeric_categorical_columns and dataframe[col].nunique()< len(dataframe[col]):
-                temp_df[col] = dataframe[col]
 
-        # Store the data into bins except the provided categorical columns as they are already grouped together
-        dataframe, data_cleaning_steps = column_bins(dataframe,Numeric_categorical_columns,data_cleaning_steps)
-        # Encode the data into integer data type
-        dataframe, data_cleaning_steps,Numeric_categorical_columns,data_encoding_map = category_encoder(dataframe,data_cleaning_steps,Numeric_categorical_columns)
-        
-        graph_df = pd.DataFrame()
-        for col in dataframe.columns:
-            if col in temp_df.columns :
-                graph_df[col] = temp_df[col]
-            else:
-                graph_df[col] = dataframe[col]
+        datetime_cols = {
+            'original_col' :[],
+            'new_cols' :[]
+        }
 
+        dataframe, data_cleaning_steps,Numeric_categorical_columns,data_encoding_map, datetime_cols = category_encoder(dataframe,data_cleaning_steps,Numeric_categorical_columns,datetime_cols)
+        
         cleaned_dataset = []  
         for col, dtype in dataframe.dtypes.items():
             cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))  
 
-        graph_urls = []
-        for col in graph_df:
-            if col != target_variable:
-                if col in temp_df.columns :
-                    graph_urls.append(graph_generator(graph_df,col,target_variable,True))
-                else:
-                    graph_urls.append(graph_generator(graph_df,col,target_variable,False))
+        correlation_matrix = dataframe.corr()
+        print(correlation_matrix[target_variable])
+        
 
+        graph_urls = []
+        """
+        for col in dataframe.columns:
+            if col != target_variable and col not in datetime_cols['original_col'] :
+                if col in Numeric_categorical_columns or col in datetime_cols['new_cols'] :
+                    graph_urls.append(graph_generator(dataframe,col,target_variable,True))
+                else:
+                    graph_urls.append(graph_generator(dataframe,col,target_variable,False))
+        """
         context = {
             'false_target': false_target,
             'got_data': got_data,
-            'data_initial_info':data_initial_info,
+            'data_initial_info':data_initial_info, 
             'data_cleaning_steps' : data_cleaning_steps,
             'cleaned_dataset':cleaned_dataset,
             'graph_urls':graph_urls
