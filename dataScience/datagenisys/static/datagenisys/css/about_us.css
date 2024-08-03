@@ -20,7 +20,7 @@ body{
     }
 }
 
-.about-us-container,.title,.dataset-button,.upload-form,.model-container{
+.about-us-container,.title,.dataset-button,.upload-form,.model-container,.graph_container{
     opacity: 0;
     animation: loadFromTop 1s ease-out forwards;
 }
@@ -134,7 +134,8 @@ body{
     display: flex;
     font-size: 1.2vw;
     flex-direction: column;
-    z-index: -1;
+    
+    
 }
 
 .model-container-initial{
@@ -146,6 +147,8 @@ body{
     flex-direction: column;  
     justify-content:center;
     align-items:center;
+    z-index: -1; /* Adjust as needed */
+   
 }
 
 
@@ -165,7 +168,10 @@ graph-cell{
     padding:0.5vw;
 }
 
+
 .graph-button{
+    margin: 2vw;
+    cursor: pointer;
     width: 100%;
     font-size: 1.1vw;
     padding: 0.7vw;
@@ -173,24 +179,46 @@ graph-cell{
     border: none;
     border-radius: 1.5vw;
     color: white;
-    text-align: center;
-    cursor: pointer;
+    text-align: center;    
 }
 
 
 .graph_container{
     display: none;
-    position:fixed;
-    top: 10%;
-    width: 60vw;
+    position: fixed; /* Fixed positioning to stay in view */
+    right: 10%;
+    width: 80vw;
+    height: 70vh;
     max-height: 80vh;
-    padding: 1%;
-    border-radius: 2vw;
     background-color: white;
-    color: #26024d;
-    z-index: 10000;
+    color: #0b0379;
+    padding: 2vw;height: 80vh;
+    z-index: 10000; 
+    overflow: auto; 
+
 }
 
-input[type="checkbox"]:checked + label + .graph_container {
-    display: block; /* Show the container when checkbox is checked */
+.graphs-for-col{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
 }
+
+.graph-close-button{
+    position: absolute; 
+    top:1vw;
+    right:1vw;
+    cursor: pointer;
+    padding: 0.5vw;
+    background-color: #b0aceb;
+    border: none;
+    font-weight: bolder;
+    color: #26024d;
+}
+
+.graphs:checked + .graph-button + .graph_container{
+    display: block;
+
+}
+
