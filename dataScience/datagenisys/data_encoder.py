@@ -5,7 +5,7 @@ def category_encoder(df, cleaning_steps,categorical_columns,datetime_encoded_col
     encoded_value_map = {}
     for col, dtype in df.dtypes.items():
         # When data is integer and does not represents categories
-        if dtype == int and col not in categorical_columns:
+        if (dtype == int or dtype == float) and col not in categorical_columns:
             if df[col].nunique() == 1:
                 unique_value = df[col].unique()[0]
                 df = df.drop(col,axis=1)
@@ -15,11 +15,6 @@ def category_encoder(df, cleaning_steps,categorical_columns,datetime_encoded_col
                 if (difference[1:]==1).all():
                     df = df.drop(col,axis=1)
                     cleaning_steps.append(f"Dropped column {col}, because it contains unique identifiers such as ID")
-        elif dtype == float and col not in categorical_columns:
-            if df[col].nunique() == 1:
-                unique_value = df[col].unique()[0]
-                df = df.drop(col,axis=1)
-                cleaning_steps.append(f"Dropped column {col}, because it contains a constant value {unique_value} across all rows.")
         elif dtype == bool:
             encoder = LabelEncoder()
             df[col] = encoder.fit_transform(df[col])

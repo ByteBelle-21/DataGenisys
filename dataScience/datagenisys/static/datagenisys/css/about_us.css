@@ -160,13 +160,37 @@ th,tr,td{
     padding:0.5vw;
 }
 
-   
-.graph-container{
-    padding: 2vw;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 20px;
+graph-cell{
+    justify-content: center;
+    padding:0.5vw;
+}
+
+.graph-button{
+    width: 100%;
+    font-size: 1.1vw;
+    padding: 0.7vw;
+    background: linear-gradient(135deg, #0b0379, #b0aceb);
+    border: none;
+    border-radius: 1.5vw;
+    color: white;
+    text-align: center;
+    cursor: pointer;
 }
 
 
+.graph_container{
+    display: none;
+    position:fixed;
+    top: 10%;
+    width: 60vw;
+    max-height: 80vh;
+    padding: 1%;
+    border-radius: 2vw;
+    background-color: white;
+    color: #26024d;
+    z-index: 10000;
+}
 
+input[type="checkbox"]:checked + label + .graph_container {
+    display: block; /* Show the container when checkbox is checked */
+}

@@ -67,6 +67,7 @@
                             <th id="table-cell">Column</th>
                             <th id="table-cell">Data Type</th>
                             <th id="table-cell"> No. of invalid values</th>
+        
                         </tr>
                     </thead>
                     <tbody>
@@ -94,6 +95,7 @@
                             <th id="table-cell">Column</th>
                             <th id="table-cell">Data Type</th>
                             <th id="table-cell"> No. of invalid values</th>
+                            <th id="table-cell">Show graphs</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -102,17 +104,15 @@
                                 <td id="table-cell">{{ col }}</td>
                                 <td id="table-cell">{{ dtype }}</td>
                                 <td id="table-cell">{{null_values}}</td>
+                                <td id="graph-cell">
+                                    <input type="checkbox" id="graphs" class="graphs" style="display: none;">
+                                    <label for="graphs" class="graph-button">See graphs </label>
+                                    <div class="graph_container">erhgvjehguehgfwyehfcjhvrnfhejcb</div>
+                                </td>
                             </tr> 
                         {% endfor %}
                     </tbody>
                 </table>
-                <H2> Graphs Overview </H2>
-                <div class="graph-container">
-                        {% for graph in graph_urls %}
-                        <img src={{graph}}>
-                        {% endfor %}
-                    
-                </div>
             {% endif %} 
         </div>
         
