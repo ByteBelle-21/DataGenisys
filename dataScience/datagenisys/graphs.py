@@ -6,31 +6,52 @@ import base64
 import random
 
 
-def graph_generator(df,independent_col,dependent_col,is_categorical):
-    plt.figure(figsize=(6,5))
-    if is_categorical==False:
-        temp_df = df.groupby([independent_col, dependent_col]).size().reset_index(name='count')
-        #sns.catplot(x=independent_col,y='count', data=temp_df,hue=dependent_col)
-        sns.lineplot(data=temp_df, x=independent_col, y='count', hue=dependent_col, palette='coolwarm')
-        plt.xlabel(independent_col)
-        plt.ylabel(f"No. of {dependent_col}")
-        #sns.lineplot(data=age_counts, x=independent_col, y='count', hue=dependent_col, palette='coolwarm')
-        #sns.lineplot(x=independent_col,y=dependent_col,data=df)
-    else:
-        plot_choice  = random.choice(['bar','pie'])
-        temp_df = pd.DataFrame(df.groupby(independent_col)[dependent_col].sum())
-        total_bars = len(temp_df)
-        colors = sns.color_palette('husl', total_bars)
-        if plot_choice == 'bar':
-            sns.barplot(x=independent_col,y=dependent_col, data=temp_df, palette=colors)
-            plt.xlabel(independent_col)
-            plt.ylabel(f"No. of {dependent_col}")
-        else:
-            plt.pie(temp_df[dependent_col], labels=temp_df.index, autopct='%1.1f%%', colors=colors)
-    plt.title(f"Relationship between {independent_col} and {dependent_col}")
-    buffer = BytesIO()
-    plt.savefig(buffer, format='png')
-    plt.close()
-    buffer.seek(0)
-    image = base64.b64encode(buffer.read()).decode('utf-8')  
-    return f"data:image/png;base64,{image}"
+def graph_generator(df,dependent_col,categorical_columns,datetime_columns):
+    # this dataframe already contains newly created columns
+    correlation_matrix = df.corr()[dependent_col]
+    correlations = correlation_matrix.drop(dependent_col)
+    correlations = correlations.abs()
+    lower_percentile = correlations.quantile(0.25)
+    upper_percentile = correlations.quantile(0.75)
+    strongly_related_columns = correlations[correlations.abs() > upper_percentile].index
+    graphs = []
+    for col in strongly_related_columns:
+        if col not in datetime_columns['original_col']:
+            plt.figure(figsize=(6,5))
+            if col in categorical_columns:
+                temp_df = pd.DataFrame(df.groupby(col)[dependent_col].sum())
+                total_bars = len(temp_df)
+                colors = sns.color_palette('husl', total_bars)
+                plot_choice  = random.choice(['bar','pie'])
+                if total_bars > 2 and plot_choice == 'pie' :
+                    plt.pie(temp_df[dependent_col], labels=temp_df.index, autopct='%1.1f%%', colors=colors)
+                else:
+                    sns.barplot(x=col,y=dependent_col, data=temp_df, palette=colors)
+                    plt.xlabel(col)
+                    plt.ylabel(f"No. of {dependent_col}")
+
+            else:
+                total_values = df[dependent_col].nunique()
+                colors = sns.color_palette('husl', total_values)
+                sns.boxenplot(x=dependent_col, y=col, data=df,colors=colors)
+                #temp_df = df.groupby([col, dependent_col]).size().reset_index(name='count')
+                #sns.lineplot(data=temp_df, x=col, y='count', hue=dependent_col, palette='coolwarm')
+                #plt.xlabel(col)
+                #plt.ylabel(f"No. of {dependent_col}")
+
+            plt.title(f"Relationship between {col} and {dependent_col}")
+            buffer = BytesIO()
+            plt.savefig(buffer, format='png')
+            plt.close()
+            buffer.seek(0)
+            image = base64.b64encode(buffer.read()).decode('utf-8')  
+            graphs.append(f"data:image/png;base64,{image}")
+    return graphs
+
+
+
+
+    
+    
+       
+    

@@ -47,11 +47,8 @@ def get_dataset(request):
         for col, dtype in dataframe.dtypes.items():
             cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))  
 
-        correlation_matrix = dataframe.corr()
-        print(correlation_matrix[target_variable])
+        graph_urls = graph_generator(dataframe,target_variable,Numeric_categorical_columns,datetime_cols)
         
-
-        graph_urls = []
         """
         for col in dataframe.columns:
             if col != target_variable and col not in datetime_cols['original_col'] :
