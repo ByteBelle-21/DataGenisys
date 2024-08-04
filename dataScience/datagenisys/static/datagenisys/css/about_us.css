@@ -198,12 +198,15 @@ graph-cell{
 
 }
 
-.graphs-for-col{
+.graphs-for-col,.all-graphs{
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
 }
+
+
+
 
 .graph-close-button{
     position: absolute; 
@@ -217,7 +220,7 @@ graph-cell{
     color: #26024d;
 }
 
-.graphs:checked + .graph-button + .graph_container{
+input[type="radio"]:checked + .graph-button + .graph_container{
     display: block;
 
 }

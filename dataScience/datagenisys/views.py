@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .nan_handler import NaN_handler
 from .data_encoder import category_encoder
-from .binning import column_bins
+from .correlations import get_corr
 from .graphs import graph_generator
 import json
 
@@ -42,33 +42,29 @@ def get_dataset(request):
         }
 
         dataframe, data_cleaning_steps,Numeric_categorical_columns,data_encoding_map, datetime_cols = category_encoder(dataframe,data_cleaning_steps,Numeric_categorical_columns,datetime_cols)
-        
-        cleaned_dataset = []  
+        correlation_dict = get_corr(dataframe)
+        cleaned_dataset = []
+        print(correlation_dict)
+
         for col, dtype in dataframe.dtypes.items():
+            if col != target_variable:
+                graphs_url = graph_generator(dataframe,col,correlation_dict[col],False,Numeric_categorical_columns)
+            else:
+                graphs_url = graph_generator(dataframe,col,correlation_dict[col],True,Numeric_categorical_columns)
+                
             cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))  
 
-        graph_urls = graph_generator(dataframe,target_variable,Numeric_categorical_columns,datetime_cols)
         
-        """
-        for col in dataframe.columns:
-            if col != target_variable and col not in datetime_cols['original_col'] :
-                if col in Numeric_categorical_columns or col in datetime_cols['new_cols'] :
-                    graph_urls.append(graph_generator(dataframe,col,target_variable,True))
-                else:
-                    graph_urls.append(graph_generator(dataframe,col,target_variable,False))
-        """
         context = {
             'false_target': false_target,
             'got_data': got_data,
             'data_initial_info':data_initial_info, 
             'data_cleaning_steps' : data_cleaning_steps,
             'cleaned_dataset':cleaned_dataset,
-            'graph_urls':graph_urls
         }
 
         return render(request, 'datagenisys/about_us.html', context)
     return render(request, 'datagenisys/about_us.html', {'got_data': got_data})
-
 
 
 

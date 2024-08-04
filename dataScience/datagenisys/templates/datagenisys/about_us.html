@@ -99,21 +99,26 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for col, dtype,null_values in cleaned_dataset %}
+                        {% for col, dtype,null_values,all_graphs in cleaned_dataset %}
                             <tr>
                                 <td id="table-cell">{{ col }}</td>
                                 <td id="table-cell">{{ dtype }}</td>
                                 <td id="table-cell">{{null_values}}</td>
                                 <td id="graph-cell">
-                                    <input type="radio" name="graph-radio"  id="graphs-{{col}}" class="graphs" style="display: none;">
-                                    <label for="graphs-{{col}}" class="graph-button">See graphs </label>
-                                    <div class="graph_container">
-                                        <button class="graph-close-button" onClick="document.getElementById('graphs-{{ col }}').checked = false;">X</button>
-                                        <div class="graphs-for-col">
-                                            <H2> Graphs for column {{col}} </H2>
-                                        </div>
-
-                                    <div>    
+                                        <input type="radio" name="graph-radio"  id="graphs-{{col}}" class="graphs" style="display: none;">
+                                        <label for="graphs-{{col}}" class="graph-button">See graphs </label>
+                                        <div class="graph_container">
+                                            <button class="graph-close-button" onClick="document.getElementById('graphs-{{ col }}').checked = false;">X</button>
+                                            <div class="graphs-for-col">
+                                                <H2> Graphs for column {{col}} </H2>
+                                                <div class="graphs-for-col">
+                                                        {% for graphall_graphs_url %}
+                                                        <img src="{{ graph }}" alt="Graph">
+                                                    {% endfor %}
+                                                </div>
+                                              
+                                            </div>
+                                        <div>
                                 </td>
                             </tr> 
                         {% endfor %}
