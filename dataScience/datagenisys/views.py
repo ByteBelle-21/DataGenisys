@@ -7,6 +7,7 @@ from .data_encoder import category_encoder
 from .correlations import get_corr
 from .graphs import graph_generator
 import json
+from django.http import JsonResponse
 
 def home_page(request):
     return render(request,'datagenisys/home_page.html')
@@ -60,21 +61,24 @@ def get_dataset(request):
                 'data_encoding_map':data_encoding_map,
             }
             return render(request, 'datagenisys/about_us.html', context)
-        elif 'column' in request.POST:
-            column = request.POST['column']
-            updated_df_json = request.POST['df_json']
-            categorical_cols = request.POST['Numeric_categorical_columns']
-            encoding_map = request.POST['data_encoding_map']
-            updated_df = pd.read_json(updated_df_json)
-            correlation_dict = get_corr(updated_df)
-            graphs_url = graph_generator(updated_df,column,correlation_dict[column],categorical_cols)
-            context={
+    return render(request, 'datagenisys/about_us.html', {'got_data': got_data})
+
+
+def get_graphs(request):
+    if request.method == 'POST':
+        column = request.POST['column']
+        updated_df_json = request.POST['df_json']
+        categorical_cols = request.POST['Numeric_categorical_columns']
+        encoding_map = request.POST['data_encoding_map']
+        updated_df = pd.read_json(updated_df_json)
+        correlation_dict = get_corr(updated_df)
+        graphs_url = graph_generator(updated_df,column,correlation_dict[column],categorical_cols)
+        response_data={
                 'graphs_url':graphs_url,
                 'column':column,
             }
-            return render(request, 'datagenisys/about_us.html', context)
-    return render(request, 'datagenisys/about_us.html', {'got_data': got_data})
-
+        return JsonResponse(response_data)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 

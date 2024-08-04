@@ -3,6 +3,7 @@
 <head>
     <title> About Us page </title>
     <link rel="stylesheet" type="text/css" href="{% static 'datagenisys/css/about_us.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="{% if not got_data or false_target %}body-initial{% endif %}">
         <div class="about-us-container">
@@ -104,35 +105,54 @@
                                 <td id="table-cell">{{ col }}</td>
                                 <td id="table-cell">{{ dtype }}</td>
                                 <td id="table-cell">{{null_values}}</td>
-                                <td id="graph-cell">
-                                            <form method="POST" action="{% url 'get_dataset' %}">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="column" value="{{ col }}">
-                                                <input type="hidden" name="df_json" value="{{ df_json }}">
-                                                <input type="hidden" name="Numeric_categorical_columns" value="{{ Numeric_categorical_columns }}">
-                                                <input type="hidden" name="data_encoding_map" value="{{ data_encoding_map }}">
-                                                <input type="radio" name="graph-radio"  id="graphs-{{col}}" class="graphs" style="display: none;">
-                                                <button type="submit" class="form-button">See graphs</button>
-                                                </form>
-                                                {% if column == col %}
-                                                <div class="graph_container">
-                                                    <button type="button" class="graph-close-button" onClick="document.getElementById('graphs-{{ col }}').checked = false;">X</button>
-                                                    <div class="graphs-for-col">
-                                                        <H2> Graphs for column {{col}} </H2>
-                                                        {% for graph in graphs_url%}  
-                                                            <img src={{graph}}> 
-                                                        {% endfor %} 
-                                                    </div>
-                                                <div>
-                                                {% endif %}
-                                       
-                                        
+                                <td >
+                                    <button class="graph-button" data-column="{{ col }}">See graphs</button>
                                 </td>
                             </tr> 
                         {% endfor %}
                     </tbody>
                 </table>
                 </div>
+                <div class="graph-container" style="display: none;">
+                    <button class="graph-close-button">X</button>
+                    <div class="graphs-info"></div>
+                    <div class="all-graphs"></div>
+                </div>
+                    <script>
+                        $(document).ready(function() {
+                            $('.graph-button').click(function() {
+                                var column = $(this).data('column');
+                                $.ajax({
+                                    url: '{% url "get_graphs" %}',
+                                    type: 'POST',
+                                    data: {
+                                        'column': column,
+                                        'df_json': '{{ df_json|escapejs }}',
+                                        'Numeric_categorical_columns': '{{ Numeric_categorical_columns|escapejs }}',
+                                        'data_encoding_map': '{{ data_encoding_map|escapejs }}',
+                                        'csrfmiddlewaretoken': '{{ csrf_token }}' // CSRF token for security
+                                    },
+                                    success: function(response) {
+                                        var graphsHtml1 = '<h2>Graphs for column ' + response.column + '</h2>';
+                                        var graphsHtml2 = '';
+                                        response.graphs_url.forEach(function(url) {
+                                                graphsHtml2 += '<img src="' + url + '" alt="Graph">';});
+                
+                                        $('.graphs-info').html(graphsHtml1);
+                                        $('.all-graphs').html(graphsHtml2);
+                                        $('.graph-container').show();
+                                    },
+                                    error: function() {
+                                        alert('An error occurred while fetching the graphs.');
+                                    }
+                                });
+                            });
+                
+                            $('.graph-close-button').click(function() {
+                                $('.graph-container').hide();
+                            });
+                        });
+                    </script>    
             {% endif %} 
         </div>
         

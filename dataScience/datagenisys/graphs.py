@@ -47,11 +47,3 @@ def graph_generator(df,input_col,corr_columns,categoricals):
             graphs.append(f"data:image/png;base64,{image}")                
     return graphs
 
-
-
-
-
-    
-    
-       
-    

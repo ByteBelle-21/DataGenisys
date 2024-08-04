@@ -163,14 +163,9 @@ th,tr,td{
     padding:0.5vw;
 }
 
-graph-cell{
-    justify-content: center;
-    padding:0.5vw;
-}
 
 
 .graph-button{
-    margin: 2vw;
     cursor: pointer;
     width: 100%;
     font-size: 1.1vw;
@@ -183,7 +178,7 @@ graph-cell{
 }
 
 
-.graph_container{
+.graph-container{
     display: none;
     position: fixed; /* Fixed positioning to stay in view */
     right: 10%;
@@ -194,24 +189,32 @@ graph-cell{
     color: #0b0379;
     padding: 2vw;height: 80vh;
     z-index: 10000; 
-    overflow: auto; 
-
+    overflow: auto;
+    
 }
 
-.graphs-for-col,.all-graphs{
+.graphs-info{
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
 }
 
+.all-graphs{
+    display: flex;
+    flex-direction: column;
+}
 
-
+.all-graphs img {
+    max-width: 50%; /* Ensure images do not exceed the width of the container */
+    height: auto;    /* Maintain aspect ratio */
+    display: block;  /* Remove any extra space below the image */
+}
 
 .graph-close-button{
     position: absolute; 
-    top:1vw;
-    right:1vw;
+    top: 1vw;
+    right: 1vw;
     cursor: pointer;
     padding: 0.5vw;
     background-color: #b0aceb;
@@ -220,8 +223,4 @@ graph-cell{
     color: #26024d;
 }
 
-input[type="radio"]:checked + .graph-button + .graph_container{
-    display: block;
-
-}
 
