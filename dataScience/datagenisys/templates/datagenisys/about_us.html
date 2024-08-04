@@ -99,26 +99,34 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for col, dtype,null_values,all_graphs in cleaned_dataset %}
+                        {% for col, dtype,null_values in cleaned_dataset %}
                             <tr>
                                 <td id="table-cell">{{ col }}</td>
                                 <td id="table-cell">{{ dtype }}</td>
                                 <td id="table-cell">{{null_values}}</td>
                                 <td id="graph-cell">
-                                        <input type="radio" name="graph-radio"  id="graphs-{{col}}" class="graphs" style="display: none;">
-                                        <label for="graphs-{{col}}" class="graph-button">See graphs </label>
-                                        <div class="graph_container">
-                                            <button class="graph-close-button" onClick="document.getElementById('graphs-{{ col }}').checked = false;">X</button>
-                                            <div class="graphs-for-col">
-                                                <H2> Graphs for column {{col}} </H2>
-                                                <div class="graphs-for-col">
-                                                        {% for graphall_graphs_url %}
-                                                        <img src="{{ graph }}" alt="Graph">
-                                                    {% endfor %}
-                                                </div>
-                                              
-                                            </div>
-                                        <div>
+                                            <form method="POST" action="{% url 'get_dataset' %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="column" value="{{ col }}">
+                                                <input type="hidden" name="df_json" value="{{ df_json }}">
+                                                <input type="hidden" name="Numeric_categorical_columns" value="{{ Numeric_categorical_columns }}">
+                                                <input type="hidden" name="data_encoding_map" value="{{ data_encoding_map }}">
+                                                <input type="radio" name="graph-radio"  id="graphs-{{col}}" class="graphs" style="display: none;">
+                                                <button type="submit" class="form-button">See graphs</button>
+                                                </form>
+                                                {% if column == col %}
+                                                <div class="graph_container">
+                                                    <button type="button" class="graph-close-button" onClick="document.getElementById('graphs-{{ col }}').checked = false;">X</button>
+                                                    <div class="graphs-for-col">
+                                                        <H2> Graphs for column {{col}} </H2>
+                                                        {% for graph in graphs_url%}  
+                                                            <img src={{graph}}> 
+                                                        {% endfor %} 
+                                                    </div>
+                                                <div>
+                                                {% endif %}
+                                       
+                                        
                                 </td>
                             </tr> 
                         {% endfor %}

@@ -17,54 +17,65 @@ def about_us(request):
 def get_dataset(request):
     got_data = False
     if request.method == 'POST':
-        csv_file = request.FILES['csvFile']
-        target_variable = request.POST['targetVariable']
-        categorical_columns = request.POST['categoricalNumeric']
-        Numeric_categorical_columns = []
-        if(categorical_columns!="No"):
-            Numeric_categorical_columns = [column.strip() for column in categorical_columns.split(',')]
-        dataframe = pd.read_csv(csv_file)
-        false_target = False
-        if(target_variable  not in dataframe.columns):
-            false_target = True 
-        got_data = True
-        data_initial_info = []
-        data_cleaning_steps = []
-        for col, dtype in dataframe.dtypes.items():
-            data_initial_info.append((col,dtype,dataframe[col].isnull().sum())) 
+        if 'csvFile' in request.FILES:
+            csv_file = request.FILES['csvFile']
+            target_variable = request.POST['targetVariable']
+            categorical_columns = request.POST['categoricalNumeric']
+            Numeric_categorical_columns = []
+            if(categorical_columns!="No"):
+                Numeric_categorical_columns = [column.strip() for column in categorical_columns.split(',')]
+            dataframe = pd.read_csv(csv_file)
+            false_target = False
+            if(target_variable  not in dataframe.columns):
+                false_target = True 
+            got_data = True
+            data_initial_info = []
+            data_cleaning_steps = []
+            for col, dtype in dataframe.dtypes.items():
+                data_initial_info.append((col,dtype,dataframe[col].isnull().sum())) 
 
-        # Handle the missing values int the dataframe
-        dataframe,data_cleaning_steps = NaN_handler(dataframe,Numeric_categorical_columns, data_cleaning_steps)
+            # Handle the missing values int the dataframe
+            dataframe,data_cleaning_steps = NaN_handler(dataframe,Numeric_categorical_columns, data_cleaning_steps)
 
-        datetime_cols = {
-            'original_col' :[],
-            'new_cols' :[]
-        }
+            datetime_cols = {
+                'original_col' :[],
+                'new_cols' :[]
+            }
 
-        dataframe, data_cleaning_steps,Numeric_categorical_columns,data_encoding_map, datetime_cols = category_encoder(dataframe,data_cleaning_steps,Numeric_categorical_columns,datetime_cols)
-        correlation_dict = get_corr(dataframe)
-        cleaned_dataset = []
-        print(correlation_dict)
-
-        for col, dtype in dataframe.dtypes.items():
-            if col != target_variable:
-                graphs_url = graph_generator(dataframe,col,correlation_dict[col],False,Numeric_categorical_columns)
-            else:
-                graphs_url = graph_generator(dataframe,col,correlation_dict[col],True,Numeric_categorical_columns)
-                
-            cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))  
-
+            dataframe, data_cleaning_steps,Numeric_categorical_columns,data_encoding_map, datetime_cols = category_encoder(dataframe,data_cleaning_steps,Numeric_categorical_columns,datetime_cols)
+            
+            cleaned_dataset = []
+            for col, dtype in dataframe.dtypes.items():
+                cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))  
         
-        context = {
-            'false_target': false_target,
-            'got_data': got_data,
-            'data_initial_info':data_initial_info, 
-            'data_cleaning_steps' : data_cleaning_steps,
-            'cleaned_dataset':cleaned_dataset,
-        }
-
-        return render(request, 'datagenisys/about_us.html', context)
+            df_json = dataframe.to_json()
+            context = {
+                'false_target': false_target,
+                'got_data': got_data,
+                'data_initial_info':data_initial_info, 
+                'data_cleaning_steps' : data_cleaning_steps,
+                'cleaned_dataset':cleaned_dataset,
+                'df_json':df_json,
+                'Numeric_categorical_columns':Numeric_categorical_columns,
+                'data_encoding_map':data_encoding_map,
+            }
+            return render(request, 'datagenisys/about_us.html', context)
+        elif 'column' in request.POST:
+            column = request.POST['column']
+            updated_df_json = request.POST['df_json']
+            categorical_cols = request.POST['Numeric_categorical_columns']
+            encoding_map = request.POST['data_encoding_map']
+            updated_df = pd.read_json(updated_df_json)
+            correlation_dict = get_corr(updated_df)
+            graphs_url = graph_generator(updated_df,column,correlation_dict[column],categorical_cols)
+            context={
+                'graphs_url':graphs_url,
+                'column':column,
+            }
+            return render(request, 'datagenisys/about_us.html', context)
     return render(request, 'datagenisys/about_us.html', {'got_data': got_data})
+
+
 
 
 
