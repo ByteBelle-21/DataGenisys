@@ -206,7 +206,7 @@ th,tr,td{
 }
 
 .all-graphs img {
-    max-width: 50%; /* Ensure images do not exceed the width of the container */
+    max-width: 70%; /* Ensure images do not exceed the width of the container */
     height: auto;    /* Maintain aspect ratio */
     display: block;  /* Remove any extra space below the image */
 }

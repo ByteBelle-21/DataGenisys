@@ -129,7 +129,8 @@
                                         'column': column,
                                         'df_json': '{{ df_json|escapejs }}',
                                         'Numeric_categorical_columns': '{{ Numeric_categorical_columns|escapejs }}',
-                                        'data_encoding_map': '{{ data_encoding_map|escapejs }}',
+                                        'data_encoding_map_js': '{{data_encoding_map_js|escapejs}}',
+                                        'target_variable': '{{target_variable}}',
                                         'csrfmiddlewaretoken': '{{ csrf_token }}' // CSRF token for security
                                     },
                                     success: function(response) {
