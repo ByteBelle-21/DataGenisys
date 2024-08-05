@@ -37,19 +37,19 @@ def get_dataset(request):
 
             # Handle the missing values int the dataframe
             dataframe,data_cleaning_steps = NaN_handler(dataframe,Numeric_categorical_columns, data_cleaning_steps)
-
+            df_json = dataframe.to_json()
             datetime_cols = {
                 'original_col' :[],
                 'new_cols' :[]
             }
 
             dataframe, data_cleaning_steps,Numeric_categorical_columns,data_encoding_map, datetime_cols = category_encoder(dataframe,data_cleaning_steps,Numeric_categorical_columns,datetime_cols)
-            data_encoding_map_js = json.dumps(data_encoding_map) 
+            
             cleaned_dataset = []
             for col, dtype in dataframe.dtypes.items():
                 cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))  
-        
-            df_json = dataframe.to_json()
+
+            correlation_dict = json.dumps(get_corr(dataframe)) 
             context = {
                 'false_target': false_target,
                 'got_data': got_data,
@@ -57,8 +57,8 @@ def get_dataset(request):
                 'data_cleaning_steps' : data_cleaning_steps,
                 'cleaned_dataset':cleaned_dataset,
                 'df_json':df_json,
+                'correlation_dict':correlation_dict,
                 'Numeric_categorical_columns':Numeric_categorical_columns,
-                'data_encoding_map_js ':data_encoding_map_js ,
                 'target_variable':target_variable,
             }
             return render(request, 'datagenisys/about_us.html', context)
@@ -70,13 +70,11 @@ def get_graphs(request):
         column = request.POST['column']
         updated_df_json = request.POST['df_json']
         categorical_cols = request.POST['Numeric_categorical_columns']
-        encoding_map_js = request.POST['data_encoding_map_js']
-        encoding_map = json.loads(encoding_map_js)
-    
         target_variable = request.POST['target_variable']
-        updated_df = pd.read_json(updated_df_json)
-        correlation_dict = get_corr(updated_df)
-        graphs_url = graph_generator(updated_df,column,correlation_dict[column],categorical_cols,encoding_map,target_variable)
+        correlated_cols_js = request.POST['correlation_dict']
+        correlated_cols = json.loads(correlated_cols_js)
+        updated_df = pd.read_json(updated_df_json) 
+        graphs_url = graph_generator(updated_df,column,correlated_cols[column],categorical_cols,target_variable)
         response_data={
                 'graphs_url':graphs_url,
                 'column':column,

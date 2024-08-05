@@ -181,13 +181,14 @@ th,tr,td{
 .graph-container{
     display: none;
     position: fixed; /* Fixed positioning to stay in view */
-    right: 10%;
-    width: 80vw;
+    right: 15%;
+    width: 70vw;
     height: 70vh;
     max-height: 80vh;
     background-color: white;
     color: #0b0379;
-    padding: 2vw;height: 80vh;
+    padding: 2vw;
+
     z-index: 10000; 
     overflow: auto;
     
@@ -206,7 +207,7 @@ th,tr,td{
 }
 
 .all-graphs img {
-    max-width: 70%; /* Ensure images do not exceed the width of the container */
+   
     height: auto;    /* Maintain aspect ratio */
     display: block;  /* Remove any extra space below the image */
 }

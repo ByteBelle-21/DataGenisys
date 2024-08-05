@@ -7,20 +7,22 @@ import base64
 import random
 
 
-def graph_generator(df,input_col,corr_columns,categoricals,encoding_dict,target):
+def graph_generator(df,input_col,corr_columns,categoricals,target):
     graphs = []
-    print(encoding_dict)
+
     if input_col== target:
         for col in corr_columns:
-            df[input_col] = df[input_col].map(encoding_dict[input_col])
+            
             # When both columns are categorical..but one of them is target
             if col in categoricals:
-                df[col] = df[col].map(encoding_dict[col])
-                sns.countplot(titanic, x=col, hue=input_col)
+                sns.countplot(df, x=col, hue=input_col)
+                plt.legend(loc='upper left', bbox_to_anchor=(1, 1), title=target)
+                plt.tight_layout()
                 print("count")
             # When one column is categorical and another is int or float..and one of them is target
             else:
-                sns.kdeplot(data=df, x=col, hue=input_col,fill=True, common_norm=False, palette="crest",alpha=.5, linewidth=0,)
+                color_palette = sns.mpl_palette("viridis", 8)
+                sns.kdeplot(data=df, x=col, hue=input_col,fill=True, common_norm=False, palette=color_palette,alpha=.5, linewidth=0,)
                 print("kdeplot")
             buffer = BytesIO()
             plt.savefig(buffer, format='png')
@@ -30,21 +32,27 @@ def graph_generator(df,input_col,corr_columns,categoricals,encoding_dict,target)
             graphs.append(f"data:image/png;base64,{image}") 
     else:
         if input_col in categoricals:
-            df[input_col] = df[input_col].map(encoding_dict[input_col])
+            
             for col in corr_columns:
                 # When both columns are categorical..but none of them is target
                 if col in categoricals:
-                    df[col] = df[col].map(encoding_dict[col])
+                    
                     if df[col].nunique() > df[input_col].nunique() :
                         sns.FacetGrid(df, col=input_col, hue=target).map(sns.histplot, col)
+                        plt.legend(loc='upper left', bbox_to_anchor=(1, 1),  title=target)
+                        plt.tight_layout()
                         print("FacetGrid")
                     else:
                         sns.FacetGrid(df, col=input_col, hue=target).map(sns.histplot,col,stat="count", multiple="stack")
+                        plt.legend(loc='upper left', bbox_to_anchor=(1, 1), title=target)
+                        plt.tight_layout()
                         plt.xlabel({col})
                         print("FacetGrid2")   
                 # When one column is categorical and another is int or float..but none of them are target
                 else:
                     sns.boxenplot(data=df, x=input_col, y=col, hue=target, gap=.2)
+                    plt.legend(loc='upper left', bbox_to_anchor=(1, 1),  title=target)
+                    plt.tight_layout()
                 buffer = BytesIO()
                 plt.savefig(buffer, format='png')
                 plt.close()
@@ -55,8 +63,10 @@ def graph_generator(df,input_col,corr_columns,categoricals,encoding_dict,target)
             for col in corr_columns:
                 # When one column is categorical and another is int or float..but none of them are target
                 if col in categoricals:
-                    df[col] = df[col].map(encoding_dict[col])
+                    
                     sns.boxenplot(data=df, x=col, y=input_col, hue=target, gap=.2)
+                    plt.legend(loc='upper left', bbox_to_anchor=(1, 1),  title=target)
+                    plt.tight_layout()
                     print("lineplot")
                 # When both columns are not categorical..and none of them is target
                 else:
