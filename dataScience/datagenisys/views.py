@@ -8,6 +8,7 @@ from .correlations import get_corr
 from .graphs import graph_generator
 from django.http import JsonResponse
 import json
+from .machine_learning_models import predictive_model
 
 def home_page(request):
     return render(request,'datagenisys/home_page.html')
@@ -50,6 +51,8 @@ def get_dataset(request):
                 cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))  
 
             correlation_dict = json.dumps(get_corr(dataframe)) 
+
+            predictive_model(dataframe,target_variable)
             context = {
                 'false_target': false_target,
                 'got_data': got_data,
