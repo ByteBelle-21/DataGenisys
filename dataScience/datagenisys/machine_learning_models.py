@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
@@ -13,6 +13,7 @@ def predictive_model(df, target):
     transform = preprocessing.StandardScaler()
     X=transform.fit_transform(X) 
     X_train, X_test, Y_train, Y_test = train_test_split(X,Y,test_size=0.3, random_state=2) 
+    """
     ml_models = {
         'Logistic Regression': {
             'model' : LogisticRegression(),
@@ -42,11 +43,27 @@ def predictive_model(df, target):
                        'p': [1,2]} 
             }    
     }   
-   
+   """
+    ml_models = {
+        'Logistic Regression': {
+            'model': LogisticRegression(),
+            'params': {'C': [0.1, 1, 10], 'penalty': ['l2'], 'solver': ['lbfgs']}
+        },
+        'Support Vector Machine': {
+            'model': SVC(),
+            'params': {'kernel': ['linear', 'rbf'], 'C': [0.1, 1, 10], 'gamma': [0.1, 1, 10]}
+        },
+        'Decision Tree Classifier': {
+            'model': DecisionTreeClassifier(),
+            'params': {'criterion': ['gini'], 'max_depth': [10, 20], 'min_samples_split': [2, 5]}
+        },
+        'K-Nearest Neighbors': {
+            'model': KNeighborsClassifier(),
+            'params': {'n_neighbors': [5, 10], 'algorithm': ['auto']}
+        }
+    }
     for model_name in ml_models.keys():
-        model_object = RandomizedSearchCV(estimator=ml_models[model_name]['model'],param_distributions=ml_models[model_name]['params'], cv=5,n_iter=10,n_jobs=-1,random_state=2)
-                                          
-                                          
+        model_object = GridSearchCV(estimator=ml_models[model_name]['model'],param_grid=ml_models[model_name]['params'], cv=5)                                  
         model_object.fit(X_train,Y_train)
         print(f"tuned hpyerparameters for {model_name} = ",model_object.best_params_)
         print(f"accuracy for {model_name} :",model_object.fit(X_test,Y_test).best_score_)

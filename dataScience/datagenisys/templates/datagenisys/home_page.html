@@ -16,9 +16,9 @@
     <div class = "main-body">
         <div id="nav-bar">
             <a class="links" href="#overlapping-content"> Upload Dataset </a>
-            <a class="links" > Predictive Model</a>
             <a class="links" href="#overview-container"> Dataset Overview </a>
             <a class="links" href="#post-cleanup-overview" > Graphs </a>
+            <a class="links" href="#model-container" > Predictive Model</a>
         </div>
         <div class ="home-container">
             <div class="title-container">
@@ -103,7 +103,7 @@
                 {% elif not got_data %}
                     <p id="overview-text">Dataset overview will be displayed here after you upload your Dataset and specify the Target variable.</p>
                 {% else %}
-                    <H1>Dataset Overview </H1>
+                    <H1>Pre-Processing Data Snapshot</H1>
                     <p>This table provides an overview of the dataset you have uploaded. It includes the following details for each column:</p>
                     <ul>
                         <li>Column Name: The name of the column in the dataset.</li>
@@ -144,7 +144,7 @@
                 {% elif not got_data %}
                     <p id="overview-text">Post-Cleanup dataset overview will be displayed here after you upload your Dataset and specify the Target variable.</p>
                 {% else %}
-                    <H1>Post-Cleanup Dataset Overview</H1>
+                    <H1>Post-Cleanup Dataset Overview </H1>
                     <p>We have successfully cleaned the dataset you uploaded. Below is an overview of the cleaned dataset.
                         This information is crucial for building and validating the prediction model, ensuring the accuracy and reliability of the results.
                         The following steps were taken to prepare the data for accurate and reliable predictions:
@@ -170,7 +170,7 @@
                                     <td id="table-cell">{{ dtype }}</td>
                                     <td id="table-cell">{{null_values}}</td>
                                     <td >
-                                        <button class="graph-button" data-column="{{ col }}">See graphs</button>
+                                        <button class="graph-button" data-column="{{ col }}">See Graphs</button>
                                     </td>
                                 </tr> 
                             {% endfor %}
@@ -185,6 +185,8 @@
                         $(document).ready(function() {
                             $('.graph-button').click(function() {
                                 var column = $(this).data('column');
+                                var spinner = $('<span class="material-symbols-outlined" id="spinner">progress_activity</span>'); 
+                                button.html(spinner);
                                 $.ajax({
                                     url: '{% url "get_graphs" %}',
                                     type: 'POST',
@@ -205,6 +207,7 @@
                                         $('.graphs-info').html(graphsHtml1);
                                         $('.all-graphs').html(graphsHtml2);
                                         $('.graph-container').show();
+                                        button.html("See Graphs");
                                     },
                                     error: function() {
                                         alert('An error occurred while fetching the graphs.');
@@ -219,6 +222,9 @@
                     </script>  
                 {% endif %}
             </div>
+        </div>
+        <div id="model-container">
+
         </div>
     </div>
 </body> 

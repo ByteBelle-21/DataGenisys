@@ -330,6 +330,8 @@ html,body{
     height: 100%;
 }
 
+
+
 #overview-text{
     border: 0.1vw solid black;
     padding: 2vw;
@@ -364,6 +366,15 @@ td,tr{
     text-align: center;    
 }
 
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#spinner{
+    animation: spin 1s linear infinite;
+}
+
 
 .graph-container{
     display: none;
@@ -382,7 +393,7 @@ td,tr{
 }
 
 .graph-container::-webkit-scrollbar {
-    display: none; /* Hide scrollbar */
+    display: none; 
 }
 
 .graphs-info{
@@ -404,17 +415,34 @@ td,tr{
     padding: 2vw;
     height: auto;
     display: block; 
-
+    border: 0.01vw solid black;
 }
+
 
 .graph-close-button{
     position: absolute; 
     top: 1vw;
     right: 1vw;
     cursor: pointer;
-    padding: 0.5vw;
-    background-color: #b0aceb;
+    border-radius: 0.7vw;
+    background: white;
+    color: #26024d;
     border: none;
     font-weight: bolder;
-    color: #26024d;
+    
 }
+
+#model-container{
+    height: 50vh;
+    width: 100%;
+    background: black;
+}
+
+
+
+
+
+
+
+
+
