@@ -1,14 +1,33 @@
 html,body{
-    box-sizing: border-box;
+    width: 100%;
+    overflow-x: hidden;   
+}
+
+.to-top{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    right: 2vw;
+    bottom: 2vw;
+    height: 5vw;
+    width: 5vw;
+    background: #edaa0c;
+    position: fixed;
+    z-index: 10000;
+    border-radius: 3vw;
+    font-size: 2vw;
 }
 
 .main-body{
     display: flex;
     flex-direction: column;
     align-items: center; 
+    overflow-x: hidden; 
+
 }
 
-.nav-bar{
+#nav-bar{
     display: flex;
     flex-direction: row;
     justify-content:right;
@@ -210,14 +229,186 @@ html,body{
 
 .dataset-button{
     margin: 2%;
-    background: linear-gradient(135deg, #40045c, #f5206a);
+    background:  #b1f3f7;
     height: 5vw;
     width: 50vw;
     border: none;
     border-radius: 2vw;
     font-size: 1.5vw;
-    color: white;
+    color: rgb(7, 7, 7);
     text-align: center;
     line-height: 5vw;
     cursor: pointer;
+}
+
+#form:checked+.dataset-button + .upload-form {
+    display: block;
+}
+
+#form:checked+.dataset-button+.form-button {
+    display: block;
+}
+
+
+.upload-form{
+    display: none;
+    position:fixed;
+    top: 10%;
+    width: 30vw;
+    max-height: 80vh;
+    padding: 1%;
+    background-color: white;
+    color: black;
+    box-shadow: 1px 4px 10px rgba(0, 0, 0, 0.688);
+    z-index: 10000;
+}
+
+.form-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.text-box{
+    height: 2vw ;
+    border-radius: 1vw;
+    font-size: 1vw;
+    padding: 0.5vw;
+    width: 20vw;
+}
+
+.form-button{
+    margin: 1vw;
+    padding: 0.7vw;
+    width: 10vw;
+    font-size: 1.1vw;
+    background: #edaa0c;
+    border: none;
+    border-radius: 1.5vw;
+    color: rgb(8, 8, 8);
+    text-align: center;
+    cursor: pointer;
+}
+
+.form-button:hover{ 
+    box-shadow: 0 0 20px black; 
+}
+
+.button-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#overview-container,#post-cleanup-overview{
+    width: 100%;
+    height: 100%;
+}
+
+.initial-overview{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2vw;
+    height: 50vh;
+}
+
+
+.overview{
+    padding: 3vw;
+    color: black;
+    display: flex;
+    font-size: 1.2vw;
+    flex-direction: column;
+    height: 100%;
+}
+
+#overview-text{
+    border: 0.1vw solid black;
+    padding: 2vw;
+}
+
+table{
+    border-collapse: collapse;
+    border: none; 
+    margin-left: 3vw;
+    margin-right: 3vw;
+}
+
+th{
+    padding: 1vw;
+    background: #edaa0c;
+}
+
+td,tr{
+    padding: 0.5vw;
+}
+
+
+.graph-button{
+    cursor: pointer;
+    width: 100%;
+    font-size: 1.1vw;
+    padding: 0.7vw;
+    background: linear-gradient(135deg, #0b0379, #b0aceb);
+    border: none;
+    border-radius: 1.5vw;
+    color: white;
+    text-align: center;    
+}
+
+
+.graph-container{
+    display: none;
+    position: fixed; 
+    top: 5vw;
+    right: 25vw;
+    width: 50vw;
+    height: 70vh;
+    max-height: 80vh;
+    background-color: white;
+    color: #0b0379;
+    padding: 2vw;
+    z-index: 10000; 
+    overflow: auto; 
+    scrollbar-width: none;
+}
+
+.graph-container::-webkit-scrollbar {
+    display: none; /* Hide scrollbar */
+}
+
+.graphs-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.all-graphs{
+    display: flex;
+    flex-direction: column;
+}
+
+.all-graphs img {
+    padding: 2vw;
+    height: auto;
+    display: block; 
+
+}
+
+.graph-close-button{
+    position: absolute; 
+    top: 1vw;
+    right: 1vw;
+    cursor: pointer;
+    padding: 0.5vw;
+    background-color: #b0aceb;
+    border: none;
+    font-weight: bolder;
+    color: #26024d;
 }

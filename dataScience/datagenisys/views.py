@@ -52,7 +52,7 @@ def get_dataset(request):
 
             correlation_dict = json.dumps(get_corr(dataframe)) 
 
-            predictive_model(dataframe,target_variable)
+            #predictive_model(dataframe,target_variable)
             context = {
                 'false_target': false_target,
                 'got_data': got_data,
@@ -64,11 +64,12 @@ def get_dataset(request):
                 'Numeric_categorical_columns':Numeric_categorical_columns,
                 'target_variable':target_variable,
             }
-            return render(request, 'datagenisys/about_us.html', context)
-    return render(request, 'datagenisys/about_us.html', {'got_data': got_data})
+            return render(request, 'datagenisys/home_page.html', context)
+    return render(request, 'datagenisys/home_page.html', {'got_data': got_data})
 
 
 def get_graphs(request):
+    print("i am here get graphs")
     if request.method == 'POST':
         column = request.POST['column']
         updated_df_json = request.POST['df_json']
