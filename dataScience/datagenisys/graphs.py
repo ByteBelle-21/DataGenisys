@@ -42,18 +42,20 @@ def graph_generator(df,input_col,corr_columns,categoricals,target):
                         for ax in plot.axes.flat:
                             ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
                             ax.set_xlabel(input_col)
-                        plt.title(f"Distribution of {col} by {input_col}")
+                        plot.fig.suptitle(f"Distribution of {col} by {input_col}", y=1)
+                        #plt.title(f"Distribution of {col} by {input_col}")
                         plt.legend(loc='upper left', bbox_to_anchor=(1, 1),  title=target)
-                        plt.tight_layout()
+                        plt.tight_layout(rect=[0, 0, 1, 0.95])
                         
                     else:
                         plot = sns.FacetGrid(df, col=col, hue=target).map(sns.histplot,input_col,stat="count", multiple="stack")
                         for ax in plot.axes.flat:
                             ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
                             ax.set_xlabel(col)
-                        plt.title(f"Distribution of {input_col} by {col}")
+                        plot.fig.suptitle(f"Distribution of {input_col} by {col}", y=1)
+                        #plt.title(f"Distribution of {input_col} by {col}")
                         plt.legend(loc='upper left', bbox_to_anchor=(1, 1), title=target)
-                        plt.tight_layout()
+                        plt.tight_layout(rect=[0, 0, 1, 0.95])
          
                 # When one column is categorical and another is int or float..but none of them are target
                 else:
@@ -79,8 +81,9 @@ def graph_generator(df,input_col,corr_columns,categoricals,target):
                     
                 # When both columns are not categorical..and none of them is target
                 else:
-                    sns.FacetGrid(df, col=target).map_dataframe(sns.scatterplot, x=col, y=input_col)
-                    plt.title(f"Relationship Between {input_col} and {col}")
+                    plot = sns.FacetGrid(df, col=target).map_dataframe(sns.scatterplot, x=col, y=input_col)
+                    plot.fig.suptitle(f"Relationship Between {input_col} and {col}", y=1)
+                    plt.tight_layout(rect=[0, 0, 1, 0.95])
                 buffer = BytesIO()
                 plt.savefig(buffer, format='png')
                 plt.close()

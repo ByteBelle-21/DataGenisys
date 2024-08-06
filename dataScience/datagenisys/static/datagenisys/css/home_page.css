@@ -50,7 +50,6 @@ html,body{
 }
 
 .links:hover{
-    text-decoration: none;
     transform: scale(1.1) ;
     animation: none;
     text-decoration: underline;
@@ -241,6 +240,10 @@ html,body{
     cursor: pointer;
 }
 
+.dataset-button:hover{
+    transform: scale(1.05) ;
+}
+
 #form:checked+.dataset-button + .upload-form {
     display: block;
 }
@@ -368,14 +371,14 @@ td,tr{
     top: 5vw;
     right: 25vw;
     width: 50vw;
-    height: 70vh;
+    height: 80vh;
     max-height: 80vh;
     background-color: white;
     color: #0b0379;
-    padding: 2vw;
     z-index: 10000; 
     overflow: auto; 
     scrollbar-width: none;
+    box-shadow: 1px 4px 10px rgba(0, 0, 0, 0.547);
 }
 
 .graph-container::-webkit-scrollbar {
@@ -387,6 +390,9 @@ td,tr{
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    background: black;
+    color: white;
+    width: 100%;
 }
 
 .all-graphs{
