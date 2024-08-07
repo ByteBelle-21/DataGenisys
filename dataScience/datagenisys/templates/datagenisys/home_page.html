@@ -10,7 +10,7 @@
 <body>
     <div class="to-top">
         <a href="#nav-bar">
-            <span class="material-symbols-outlined">arrow_upward</span>
+            <span class="material-symbols-outlined" style="font-size:2vw">arrow_upward</span>
         </a>
     </div>
     <div class = "main-body">
@@ -44,15 +44,15 @@
         <div id="overlapping-content">
             <div class="block-conatiner">
                 <div class="step-blocks">
-                    <span class="material-symbols-outlined">description</span>
+                    <span class="material-symbols-outlined" style="font-size:2.5vw">description</span>
                     <p>Upload the Dataset</p>
                 </div>
-                <div class="step-blocks" style="background:#edaa0c">
-                    <span class="material-symbols-outlined">target</span>
+                <div class="step-blocks" style="background:#edaa0c" >
+                    <span class="material-symbols-outlined" style="font-size:2.5vw">target</span>
                     <p>Define Target Variable </p>
                 </div>
                 <div class="step-blocks">
-                    <span class="material-symbols-outlined">automation</span>
+                    <span class="material-symbols-outlined" style="font-size:2.5vw">automation</span>
                     <p>Get Predictive Model</p>
                 </div>
             </div>
@@ -137,12 +137,12 @@
             </div>
         </div>
         <div id="post-cleanup-overview">
-            <div class="{% if not got_data or false_target %}initial-overview{%else%}overview{% endif %}">
+            <div class="{% if not got_data or false_target %}initial-overview{%else%}overview {% endif %}">
                 {% if false_target %}
                     <p id="overview-text"> The dataset does not contain the target variable you provided. Please check and try again.
                     <br>Note that the target variable name is case sensitive.</p>
                 {% elif not got_data %}
-                    <p id="overview-text">Post-Cleanup dataset overview will be displayed here after you upload your Dataset and specify the Target variable.</p>
+                    <p id="overview-text">Post-Cleanup dataset overview with graphs will be displayed here after you upload your Dataset and specify the Target variable.</p>
                 {% else %}
                     <H1>Post-Cleanup Dataset Overview </H1>
                     <p>We have successfully cleaned the dataset you uploaded. Below is an overview of the cleaned dataset.
@@ -184,6 +184,7 @@
                     <script>
                         $(document).ready(function() {
                             $('.graph-button').click(function() {
+                                var button = $(this);
                                 var column = $(this).data('column');
                                 var spinner = $('<span class="material-symbols-outlined" id="spinner">progress_activity</span>'); 
                                 button.html(spinner);
@@ -211,6 +212,7 @@
                                     },
                                     error: function() {
                                         alert('An error occurred while fetching the graphs.');
+                                        button.html("See Graphs");
                                     }
                                 });
                             });
@@ -224,7 +226,33 @@
             </div>
         </div>
         <div id="model-container">
-
+            <div class="predictive-model">
+                <div class="model-info">
+                    <span class="material-symbols-outlined" style="font-size:8vw">model_training</span>
+                    <H2>Unleashing the Power of Your Data</H2>
+                    <p>Enter the required features or adjust existing data, submit it, and receive predictions for the target variable.</p>
+                </div>
+                <div class="input-form">
+                    {% if false_target or not got_data  %}
+                        <H2>Predictive Model will appear here</H2>
+                    {% else %}
+                        <form method="POST" enctype="multipart/form-data" action="{% url 'get_dataset' %}">
+                            {% csrf_token %}
+                                <H2>Enter required features</H2>
+                                {% for col, dtype,null_values in cleaned_dataset %}
+                                    {% if col != target_variable%}
+                                        {{col}},
+                                    {% endif %}
+                                {% endfor %}
+                                <br>
+                                <input type="text" name="independent_cols"  class="text-box feature-text-box" placeholder="feature1, feature2,...." required>
+                                <input type="submit" value="Submit" class="form-button"> 
+                        </form>
+                        <H2>{{target_variable}} : Yes</H2>
+                    
+                    {% endif%}
+                </div>
+            </div>
         </div>
     </div>
 </body> 
