@@ -6,8 +6,11 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
+import joblib
+from sklearn.metrics import accuracy_score, f1_score
 
 def predictive_model(df, target):
+
     Y = df[target].to_numpy()
     X = df.drop(target, axis=1)
     transform = preprocessing.StandardScaler()
@@ -62,9 +65,28 @@ def predictive_model(df, target):
             'params': {'n_neighbors': [5, 10], 'algorithm': ['auto']}
         }
     }
+
+    highest_accuracy = 0
+    best_model = None
+    best_f1_score = 0
     for model_name in ml_models.keys():
         model_object = GridSearchCV(estimator=ml_models[model_name]['model'],param_grid=ml_models[model_name]['params'], cv=5)                                  
         model_object.fit(X_train,Y_train)
-        print(f"tuned hpyerparameters for {model_name} = ",model_object.best_params_)
-        print(f"accuracy for {model_name} :",model_object.fit(X_test,Y_test).best_score_)
+        Y_predict = model_object.predict(X_test)
+        accuracy = accuracy_score(Y_test, Y_predict)
+        F1_score = f1_score(Y_test, Y_predict, average='weighted')
+        if accuracy > highest_accuracy:
+            highest_accuracy = accuracy
+            best_f1_score = F1_score
+            best_model = model_name
+        elif accuracy == highest_accuracy:
+            if F1_score > best_f1_score:
+                highest_accuracy = accuracy
+                best_f1_score = F1_score
+                best_model = model_name
     
+    model_filename = 'prediction_model.pkl'
+    scaler_filename = 'scaler.pkl'
+    joblib.dump(ml_models[best_model]['model'], model_filename)
+    joblib.dump(transform, scaler_filename)
+    return model_filename , scaler_filename

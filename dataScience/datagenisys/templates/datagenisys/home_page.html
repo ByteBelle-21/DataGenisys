@@ -236,7 +236,7 @@
                     {% if false_target or not got_data  %}
                         <H2>Predictive Model will appear here</H2>
                     {% else %}
-                        <form method="POST" enctype="multipart/form-data" action="{% url 'get_dataset' %}">
+                        <form method="POST" enctype="multipart/form-data" action="{% url 'get_prediction' %}">
                             {% csrf_token %}
                                 <H2>Enter required features</H2>
                                 {% for col, dtype,null_values in cleaned_dataset %}
@@ -246,6 +246,8 @@
                                 {% endfor %}
                                 <br>
                                 <input type="text" name="independent_cols"  class="text-box feature-text-box" placeholder="feature1, feature2,...." required>
+                                <input type="hidden" name="prediction_model_file" value="{{prediction_model_file}}">
+                                <input type="hidden" name="scaler_file" value="{{scaler_file}}">
                                 <input type="submit" value="Submit" class="form-button"> 
                         </form>
                         <H2>{{target_variable}} : Yes</H2>

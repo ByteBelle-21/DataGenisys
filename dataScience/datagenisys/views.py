@@ -9,6 +9,7 @@ from .graphs import graph_generator
 from django.http import JsonResponse
 import json
 from .machine_learning_models import predictive_model
+import joblib
 
 def home_page(request):
     return render(request,'datagenisys/home_page.html')
@@ -52,7 +53,8 @@ def get_dataset(request):
 
             correlation_dict = json.dumps(get_corr(dataframe)) 
 
-            #predictive_model(dataframe,target_variable)
+            prediction_model_file, scaler_file = predictive_model(dataframe,target_variable)
+
             context = {
                 'false_target': false_target,
                 'got_data': got_data,
@@ -63,13 +65,14 @@ def get_dataset(request):
                 'correlation_dict':correlation_dict,
                 'Numeric_categorical_columns':Numeric_categorical_columns,
                 'target_variable':target_variable,
+                'prediction_model_file':prediction_model_file,
+                'scaler_file':scaler_file,
             }
             return render(request, 'datagenisys/home_page.html', context)
     return render(request, 'datagenisys/home_page.html', {'got_data': got_data})
 
 
 def get_graphs(request):
-    print("i am here get graphs")
     if request.method == 'POST':
         column = request.POST['column']
         updated_df_json = request.POST['df_json']
@@ -87,5 +90,20 @@ def get_graphs(request):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
-
+def get_prediction(request):
+    if request.method == 'POST':
+        independent_features = request.POST['independent_cols']
+        model_file = request.POST['prediction_model_file']
+        scaler_filename = request.POST['scaler_file']
+        features = [feature.strip() for feature in independent_features.split(',')]
+        prediction_model= joblib.load(model_file)
+        scaler = joblib.load(scaler_filename)
+        feature_array = np.array(features).reshape(1, -1)
+        scaled_features = scaler.transform(feature_array)
+        prediction = prediction_model.predict(scaled_features)
+        print(prediction)
+        response_data={
+                'prediction':prediction,
+            }
+    return JsonResponse(response_data)
 
