@@ -259,7 +259,7 @@
                                     e.preventDefault();
                                     var prediction_spinner = $('.prediction_value')
                                     var spinner = $('<span class="material-symbols-outlined" id="spinner">progress_activity</span>'); 
-                                    prediction_spinner.html('{{ target_variable }} : ').append(spinner);
+                                    prediction_spinner.html('{{ target_variable }} : In a moment... ').append(spinner);
                                 $.ajax({
                                     url: '{% url "get_prediction" %}',
                                     type: 'POST',

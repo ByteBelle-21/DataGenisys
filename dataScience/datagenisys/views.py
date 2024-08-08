@@ -10,6 +10,7 @@ from django.http import JsonResponse
 import json
 from .machine_learning_models import predictive_model
 import joblib
+import io
 
 def home_page(request):
     return render(request,'datagenisys/home_page.html')
@@ -101,7 +102,7 @@ def get_prediction(request):
         encoding_map_js = request.POST["data_encoding_map_js"]
         encoding_map = json.loads(encoding_map_js)
         dataframe_js = request.POST['encoded_df_js']
-        dataframe = pd.read_json(dataframe_js) 
+        dataframe = pd.read_json(io.StringIO(dataframe_js)) 
 
         features = [feature.strip() for feature in independent_features.split(',')]
         encoded_features = []
