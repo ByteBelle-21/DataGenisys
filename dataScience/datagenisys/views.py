@@ -48,25 +48,29 @@ def get_dataset(request):
             dataframe, data_cleaning_steps,Numeric_categorical_columns,data_encoding_map, datetime_cols = category_encoder(dataframe,data_cleaning_steps,Numeric_categorical_columns,datetime_cols)
             
             cleaned_dataset = []
+            final_columns = []
             for col, dtype in dataframe.dtypes.items():
-                cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))  
+                cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum())) 
+                if col != target_variable: 
+                    final_columns.append(col)
 
-            correlation_dict = json.dumps(get_corr(dataframe)) 
-
-            prediction_model_file, scaler_file = predictive_model(dataframe,target_variable)
-
+            correlation_dict = json.dumps(get_corr(dataframe))  
+            data_encoding_map_js = json.dumps(data_encoding_map)
+            final_columns_js = json.dumps(final_columns)
+            encoded_df_js = dataframe.to_json()
             context = {
                 'false_target': false_target,
                 'got_data': got_data,
                 'data_initial_info':data_initial_info, 
                 'data_cleaning_steps' : data_cleaning_steps,
                 'cleaned_dataset':cleaned_dataset,
+                'final_columns_js':final_columns_js,
                 'df_json':df_json,
+                'encoded_df_js':encoded_df_js,
                 'correlation_dict':correlation_dict,
+                "data_encoding_map_js":data_encoding_map_js,
                 'Numeric_categorical_columns':Numeric_categorical_columns,
                 'target_variable':target_variable,
-                'prediction_model_file':prediction_model_file,
-                'scaler_file':scaler_file,
             }
             return render(request, 'datagenisys/home_page.html', context)
     return render(request, 'datagenisys/home_page.html', {'got_data': got_data})
@@ -93,17 +97,36 @@ def get_graphs(request):
 def get_prediction(request):
     if request.method == 'POST':
         independent_features = request.POST['independent_cols']
-        model_file = request.POST['prediction_model_file']
-        scaler_filename = request.POST['scaler_file']
+        dependent_feature = request.POST['target_variable']
+        encoding_map_js = request.POST["data_encoding_map_js"]
+        encoding_map = json.loads(encoding_map_js)
+        dataframe_js = request.POST['encoded_df_js']
+        dataframe = pd.read_json(dataframe_js) 
+
         features = [feature.strip() for feature in independent_features.split(',')]
-        prediction_model= joblib.load(model_file)
-        scaler = joblib.load(scaler_filename)
-        feature_array = np.array(features).reshape(1, -1)
-        scaled_features = scaler.transform(feature_array)
-        prediction = prediction_model.predict(scaled_features)
-        print(prediction)
+        encoded_features = []
+        all_columns = []
+        for col in dataframe.columns:
+            if col != dependent_feature:
+                all_columns.append(col)
+        input_values = {}
+        for col, feature in zip(all_columns,features):
+            input_values[col] = feature
+            if any(char.isalpha() for char in feature):
+                encoded_value = next((k for k in encoding_map[col].keys() if encoding_map[col][k] == feature), None)
+                if encoded_value == None:
+                    return JsonResponse({"Error":f"We could not find encoded value for {feature}.Please verify your inputs and try again "})
+                else:
+                    encoded_features.append(encoded_value)
+            else:
+                encoded_features.append(feature)
+
+        feature_array = np.array(encoded_features).reshape(1, -1)
+        prediction = predictive_model(dataframe, dependent_feature, feature_array)
+        decoded_prediction = encoding_map[dependent_feature][str(prediction[0])]
         response_data={
-                'prediction':prediction,
+                'input_values': json.dumps(input_values),
+                'prediction':decoded_prediction, 
             }
     return JsonResponse(response_data)
 

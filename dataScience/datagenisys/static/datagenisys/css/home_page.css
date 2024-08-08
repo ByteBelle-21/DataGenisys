@@ -443,9 +443,10 @@ td,tr{
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 70vh;
+    min-height: 70vh;
     width: 100%;
     padding: 5vw;
+    box-sizing: border-box;
 }
 
 .predictive-model{

@@ -6,15 +6,14 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
-import joblib
 from sklearn.metrics import accuracy_score, f1_score
 
-def predictive_model(df, target):
-
+def predictive_model(df, target, X_input):
     Y = df[target].to_numpy()
     X = df.drop(target, axis=1)
     transform = preprocessing.StandardScaler()
     X=transform.fit_transform(X) 
+    X_input = transform.fit_transform(X_input)
     X_train, X_test, Y_train, Y_test = train_test_split(X,Y,test_size=0.3, random_state=2) 
     """
     ml_models = {
@@ -78,15 +77,12 @@ def predictive_model(df, target):
         if accuracy > highest_accuracy:
             highest_accuracy = accuracy
             best_f1_score = F1_score
-            best_model = model_name
+            best_model = model_object
         elif accuracy == highest_accuracy:
             if F1_score > best_f1_score:
                 highest_accuracy = accuracy
                 best_f1_score = F1_score
-                best_model = model_name
+                best_model = model_object
     
-    model_filename = 'prediction_model.pkl'
-    scaler_filename = 'scaler.pkl'
-    joblib.dump(ml_models[best_model]['model'], model_filename)
-    joblib.dump(transform, scaler_filename)
-    return model_filename , scaler_filename
+    Y_output = best_model.predict(X_input)
+    return Y_output

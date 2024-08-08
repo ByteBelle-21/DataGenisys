@@ -246,12 +246,50 @@
                                 {% endfor %}
                                 <br>
                                 <input type="text" name="independent_cols"  class="text-box feature-text-box" placeholder="feature1, feature2,...." required>
-                                <input type="hidden" name="prediction_model_file" value="{{prediction_model_file}}">
-                                <input type="hidden" name="scaler_file" value="{{scaler_file}}">
-                                <input type="submit" value="Submit" class="form-button"> 
+                                <input type="hidden" name="target_variable" value="{{ target_variable }}">
+                                <input type="hidden" name="encoded_df_js" value="{{encoded_df_js}}">
+                                <input type="hidden" name="data_encoding_map_js" value="{{ data_encoding_map_js}}">
+                                <input type="submit" value="Submit" class="form-button input-submit"> 
                         </form>
-                        <H2>{{target_variable}} : Yes</H2>
-                    
+                        <p class="input_display"></p>
+                        <H2 class="prediction_value">{{ target_variable }} : </H2>
+                        <script>
+                            $(document).ready(function() {
+                                $('form').on('submit', function(e) {
+                                    e.preventDefault();
+                                    var prediction_spinner = $('.prediction_value')
+                                    var spinner = $('<span class="material-symbols-outlined" id="spinner">progress_activity</span>'); 
+                                    prediction_spinner.html('{{ target_variable }} : ').append(spinner);
+                                $.ajax({
+                                    url: '{% url "get_prediction" %}',
+                                    type: 'POST',
+                                    headers: {
+                                        'X-CSRFToken': '{{ csrf_token }}'
+                                    },
+                                    data: $(this).serialize(),
+                                    success: function(response) {
+                                        features_html = '<H3>Provided features</H3><br>'
+                                        var input_features = JSON.parse(response.input_values);
+                                        for (var key in input_features) {
+                                            if (input_features.hasOwnProperty(key)) {
+                                                features_html += key + ' : ' + input_features[key]+', ';
+                                            }
+                                        }
+                                        features_html += 'and {{ target_variable}} is';
+                                        $('input[name="independent_cols"]').val('');
+                                        $('.prediction_value').text('{{ target_variable }} : '+response.prediction);
+                                        $('.input_display').html(features_html);
+                                    },
+                                    error: function() {
+                                        spinner.remove();
+                                        $('input[name="independent_cols"]').val('');
+                                        alert('An error occurred while predicting the dependent feature');
+                                        
+                                    }
+                                });
+                            });
+                        });
+                        </script>  
                     {% endif%}
                 </div>
             </div>
