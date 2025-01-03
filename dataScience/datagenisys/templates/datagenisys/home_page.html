@@ -18,7 +18,7 @@
             <a class="links" href="#dataset-information"> Dataset information</a>
             <a class="links" href="#overview-container"> Dataset Overview </a>
             <a class="links" href="#post-cleanup-overview" > Graphs </a>
-            <a class="links" href="#model-container" > Predictive Model</a>
+            <a class="links" href="#trained_models" > Predictive Model</a>
         </div>
         <div class ="home-container">
             <div class="title-container">
@@ -76,7 +76,7 @@
         <div id="dataset-information">
             <H1>Dataset Information</H1>
             <p style="width:70%">
-                For this project, I have utilized the <strong>>Alzheimer's Disease Datase</strong>t, 
+                For this project, I have utilized the <strong>Alzheimer's Disease Dataset</strong>, 
                 which was sourced from Kaggle. This dataset provides a comprehensive collection 
                 of health-related data for 2,149 patients, with unique Patient IDs. It encompasses a wide 
                 range of information, including demographic details, lifestyle factors, medical history, 
@@ -226,8 +226,29 @@
                 {% endif %}
             </div>
         </div>
-        <div class="trained_models">
+        <div id="trained_models">
             <H1>Trained Machine Learning Models</H1>
+            <p>
+                We have successfulyy trained Machone Learning models. Below table 
+                represets an overview of the trained machine learning models and 
+                their performance metrics, focusing on the best hyperparameters and 
+                accuracy of each model. These results are key for understanding the 
+                effectiveness of the models and for selecting the most appropriate 
+                model for making reliable predictions.
+            </p>
+            <ul>
+                <li> Hyperparameters - The external settings that you manually define 
+                    before training the model. These control how the learning 
+                    process works and are adjusted to improve model performance.
+                </li>
+                <li>
+                    Accuracy - Accuracy is the proportion of correctly predicted 
+                    instances out of the total number of predictions made by the model. 
+                    It gives you an overall measure of how well the model is 
+                    performing on the test set.
+                </li>
+
+            </ul>
             <table border="1">
                 <thead>
                     <tr>
