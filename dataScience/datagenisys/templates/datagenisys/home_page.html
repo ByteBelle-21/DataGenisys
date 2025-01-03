@@ -15,7 +15,7 @@
     </div>
     <div class = "main-body">
         <div id="nav-bar">
-            <a class="links" href="#overlapping-content"> Upload Dataset </a>
+            <a class="links" href="#dataset-information"> Dataset information</a>
             <a class="links" href="#overview-container"> Dataset Overview </a>
             <a class="links" href="#post-cleanup-overview" > Graphs </a>
             <a class="links" href="#model-container" > Predictive Model</a>
@@ -44,56 +44,57 @@
         <div id="overlapping-content">
             <div class="block-conatiner">
                 <div class="step-blocks">
-                    <span class="material-symbols-outlined" style="font-size:2.5vw">description</span>
-                    <p>Upload the Dataset</p>
+                    <span class="material-symbols-outlined" style="font-size:2.5vw">query_stats</span>
+                    <p>Pre-processing</p>
                 </div>
                 <div class="step-blocks" style="background:#edaa0c" >
-                    <span class="material-symbols-outlined" style="font-size:2.5vw">target</span>
-                    <p>Define Target Variable </p>
+                    <span class="material-symbols-outlined" style="font-size:2.5vw">bar_chart</span>
+                    <p>Visualization </p>
                 </div>
                 <div class="step-blocks">
                     <span class="material-symbols-outlined" style="font-size:2.5vw">automation</span>
-                    <p>Get Predictive Model</p>
+                    <p>Predictive Model</p>
                 </div>
             </div>
             <div class="about-us">
                 <div class="info-block">
                     <H1>Welcome to Data Predictify </H1>
-                    <p> where the future of data science meets effortless machine learning.<br>
-                        At Data Predictify, we simplify the complex by turning your datasets 
-                        into powerful predictive models with just a few clicks. <br>
-                        Whether you're a researcher, data analyst, or business professional, 
-                        our intuitive platform allows you to upload your data and define your target 
-                        variable, and we'll handle the rest. Our cutting-edge algorithms and 
-                        user-friendly interface ensure you get accurate predictions and insightful 
-                        analyses without the need for advanced technical skills. <br>
-                        Join us on a journey to unlock the true potential of your data. Empower your decisions, drive innovation, and stay ahead of the curve with DataGenie, where your data’s possibilities are limitless.
+                    <p> 
+                        A data science project where I am applying the skills I’ve developed as 
+                        a computer science student to build predictive models using Kaggle’s 
+                        Alzheimer’s Disease Dataset.</br>
+                        The goal of this project is to analyze the dataset, apply machine learning 
+                        techniques, and build models that predict the progression of Alzheimer’s disease. 
+                        Throughout the process, I focus on key aspects such as data preprocessing, 
+                        feature engineering, model selection, and performance evaluation to generate meaningful insights.</br>
+                        I invite you to explore the results of this project and follow my journey as I 
+                        continue to expand my expertise in data science and machine learning.
                     </p>
                 </div>
-                <input type="checkbox" id="form" class="form" style="display: none;">
-                <label for="form" class="dataset-button">Upload Your Dataset </label>
-                <div class="upload-form">
-                    <form method="POST" enctype="multipart/form-data" action="{% url 'get_dataset' %}">
-                        {% csrf_token %}
-                        <div class="form-container">
-                            <H3>Upload the CSV file </H3>
-                            <input type="file" name="csvFile" required>
-                            <H3>Define your Target Variable</H3>
-                            <input type="text" name="targetVariable" class="text-box" placeholder=" Enter Column name here" required>
-                            <H3>Numeric Columns Representing Categories</H3>
-                            <p style="margin-top:-4% ">Please enter the names of the columns that contain numeric values (e.g., 0, 1, 2, 3) 
-                                which represent different categories (e.g., 'Category 1', 'Category 2'). 
-                                Separate each column name with a comma.
-                                If there are no such columns, please input 'No'.</p>
-                            <input type="text" name="categoricalNumeric" class="text-box" placeholder="column1, column5, .." required>
-                            <div class="button-container">
-                                <input type="submit" value="Submit" class="form-button">
-                                <input for="form" type="reset" value="Cancel" class="form-button" onClick="document.getElementById('form').checked = false;"></input>
-                            </div>
-                        </div>
-                    </form>
-                </div>
             </div>
+        </div>
+        <div id="dataset-information">
+            <H1>Dataset Information</H1>
+            <p style="width:70%">
+                For this project, I have utilized the <strong>>Alzheimer's Disease Datase</strong>t, 
+                which was sourced from Kaggle. This dataset provides a comprehensive collection 
+                of health-related data for 2,149 patients, with unique Patient IDs. It encompasses a wide 
+                range of information, including demographic details, lifestyle factors, medical history, 
+                clinical measurements, cognitive and functional assessments, symptoms, and Alzheimer's Disease diagnosis.</br> 
+                I would like to acknowledge and thank the creator(s) of this dataset for making it publicly available 
+                and accessible for research purposes.</br>
+                Below is the citation for the Alzheimer's Disease Dataset.</br>
+                <div class="citation">
+                    @misc{rabie_el_kharoua_2024,</br>
+                        title={Alzheimer's Disease Dataset},</br>
+                        url={https://www.kaggle.com/dsv/8668279},</br>
+                        DOI={10.34740/KAGGLE/DSV/8668279},</br>
+                        publisher={Kaggle},</br>
+                        author={Rabie El Kharoua},</br>
+                        year={2024}</br>
+                    }
+                </div>
+            </p>
         </div>
         <div id="overview-container">
             <div class="{% if not got_data or false_target %}initial-overview{%else%}overview{% endif %}">
@@ -236,7 +237,7 @@
                     {% if false_target or not got_data  %}
                         <H2>Predictive Model will appear here</H2>
                     {% else %}
-                        <form method="POST" enctype="multipart/form-data" action="{% url 'get_prediction' %}">
+                        <form method="POST" enctype="multipart/form-data" action="{% url 'get_dataset' %}">
                             {% csrf_token %}
                                 <H2>Enter required features</H2>
                                 {% for col, dtype,null_values in cleaned_dataset %}
@@ -246,50 +247,10 @@
                                 {% endfor %}
                                 <br>
                                 <input type="text" name="independent_cols"  class="text-box feature-text-box" placeholder="feature1, feature2,...." required>
-                                <input type="hidden" name="target_variable" value="{{ target_variable }}">
-                                <input type="hidden" name="encoded_df_js" value="{{encoded_df_js}}">
-                                <input type="hidden" name="data_encoding_map_js" value="{{ data_encoding_map_js}}">
-                                <input type="submit" value="Submit" class="form-button input-submit"> 
+                                <input type="submit" value="Submit" class="form-button"> 
                         </form>
-                        <p class="input_display"></p>
-                        <H2 class="prediction_value">{{ target_variable }} : </H2>
-                        <script>
-                            $(document).ready(function() {
-                                $('form').on('submit', function(e) {
-                                    e.preventDefault();
-                                    var prediction_spinner = $('.prediction_value')
-                                    var spinner = $('<span class="material-symbols-outlined" id="spinner">progress_activity</span>'); 
-                                    prediction_spinner.html('{{ target_variable }} : In a moment... ').append(spinner);
-                                $.ajax({
-                                    url: '{% url "get_prediction" %}',
-                                    type: 'POST',
-                                    headers: {
-                                        'X-CSRFToken': '{{ csrf_token }}'
-                                    },
-                                    data: $(this).serialize(),
-                                    success: function(response) {
-                                        features_html = '<H3>Provided features</H3><br>'
-                                        var input_features = JSON.parse(response.input_values);
-                                        for (var key in input_features) {
-                                            if (input_features.hasOwnProperty(key)) {
-                                                features_html += key + ' : ' + input_features[key]+', ';
-                                            }
-                                        }
-                                        features_html += 'and {{ target_variable}} is';
-                                        $('input[name="independent_cols"]').val('');
-                                        $('.prediction_value').text('{{ target_variable }} : '+response.prediction);
-                                        $('.input_display').html(features_html);
-                                    },
-                                    error: function() {
-                                        spinner.remove();
-                                        $('input[name="independent_cols"]').val('');
-                                        alert('An error occurred while predicting the dependent feature');
-                                        
-                                    }
-                                });
-                            });
-                        });
-                        </script>  
+                        <H2>{{target_variable}} : Yes</H2>
+                    
                     {% endif%}
                 </div>
             </div>
