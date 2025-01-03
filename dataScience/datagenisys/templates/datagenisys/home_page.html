@@ -226,48 +226,6 @@
                 {% endif %}
             </div>
         </div>
-        <div id="trained_models">
-            <H1>Trained Machine Learning Models</H1>
-            <p>
-                We have successfulyy trained Machone Learning models. Below table 
-                represets an overview of the trained machine learning models and 
-                their performance metrics, focusing on the best hyperparameters and 
-                accuracy of each model. These results are key for understanding the 
-                effectiveness of the models and for selecting the most appropriate 
-                model for making reliable predictions.
-            </p>
-            <ul>
-                <li> Hyperparameters - The external settings that you manually define 
-                    before training the model. These control how the learning 
-                    process works and are adjusted to improve model performance.
-                </li>
-                <li>
-                    Accuracy - Accuracy is the proportion of correctly predicted 
-                    instances out of the total number of predictions made by the model. 
-                    It gives you an overall measure of how well the model is 
-                    performing on the test set.
-                </li>
-
-            </ul>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th id="table-cell">Trained model</th>
-                        <th id="table-cell">Parameters</th>
-                        <th id="table-cell">Accuracy</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for model in trained_model_array %}
-                        <tr>
-                            <td id="table-cell">{{ model.0 }}</td>
-                            <td id="table-cell">{{ model.3 }}</td>
-                            <td id="table-cell">{{ model.2 }}</td>
-                        </tr> 
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
         <div id="model-container">
             <div class="predictive-model">
                 <div class="model-info">
@@ -279,7 +237,7 @@
                     {% if false_target or not got_data  %}
                         <H2>Predictive Model will appear here</H2>
                     {% else %}
-                        <form method="POST" enctype="multipart/form-data" action="{% url 'get_dataset' %}">
+                        <form method="POST" enctype="multipart/form-data" action="{% url 'get_prediction' %}">
                             {% csrf_token %}
                                 <H2>Enter required features</H2>
                                 {% for col, dtype,null_values in cleaned_dataset %}
@@ -289,10 +247,49 @@
                                 {% endfor %}
                                 <br>
                                 <input type="text" name="independent_cols"  class="text-box feature-text-box" placeholder="feature1, feature2,...." required>
+                                <input type="hidden" name="target_variable" value="{{ target_variable }}">
+                                <input type="hidden" name="encoded_df_js" value="{{encoded_df_js}}">
+                                <input type="hidden" name="data_encoding_map_js" value="{{ data_encoding_map_js}}">
                                 <input type="submit" value="Submit" class="form-button"> 
                         </form>
-                        <H2>{{target_variable}} : Yes</H2>
-                    
+                        <H2>{{target_variable}} : </H2>
+                        <script>
+                            $(document).ready(function() {
+                                $('form').on('submit', function(e) {
+                                    e.preventDefault();
+                                    var prediction_spinner = $('.prediction_value')
+                                    var spinner = $('<span class="material-symbols-outlined" id="spinner">progress_activity</span>'); 
+                                    prediction_spinner.html('{{ target_variable }} : In a moment... ').append(spinner);
+                                $.ajax({
+                                    url: '{% url "get_prediction" %}',
+                                    type: 'POST',
+                                    headers: {
+                                        'X-CSRFToken': '{{ csrf_token }}'
+                                    },
+                                    data: $(this).serialize(),
+                                    success: function(response) {
+                                        features_html = '<H3>Provided features</H3><br>'
+                                        var input_features = JSON.parse(response.input_values);
+                                        for (var key in input_features) {
+                                            if (input_features.hasOwnProperty(key)) {
+                                                features_html += key + ' : ' + input_features[key]+', ';
+                                            }
+                                        }
+                                        features_html += 'and {{ target_variable}} is';
+                                        $('input[name="independent_cols"]').val('');
+                                        $('.prediction_value').text('{{ target_variable }} : '+response.prediction);
+                                        $('.input_display').html(features_html);
+                                    },
+                                    error: function() {
+                                        spinner.remove();
+                                        $('input[name="independent_cols"]').val('');
+                                        alert('An error occurred while predicting the dependent feature');
+                                        
+                                    }
+                                });
+                            });
+                        });
+                        </script>  
                     {% endif%}
                 </div>
             </div>

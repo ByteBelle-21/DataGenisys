@@ -72,6 +72,7 @@ WSGI_APPLICATION = 'dataScience.wsgi.application'
 
 
 CSRF_TRUSTED_ORIGINS =[
+    'https://psutar9920-8000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai',
     'https://jrg814-8000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai',
 ]
 
