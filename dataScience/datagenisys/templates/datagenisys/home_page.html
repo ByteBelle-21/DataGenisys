@@ -18,7 +18,7 @@
             <a class="links" href="#dataset-information"> Dataset information</a>
             <a class="links" href="#overview-container"> Dataset Overview </a>
             <a class="links" href="#post-cleanup-overview" > Graphs </a>
-            <a class="links" href="#trained_models" > Predictive Model</a>
+            <a class="links" href="#model-container" > Predictive Model</a>
         </div>
         <div class ="home-container">
             <div class="title-container">
@@ -250,9 +250,12 @@
                                 <input type="hidden" name="target_variable" value="{{ target_variable }}">
                                 <input type="hidden" name="encoded_df_js" value="{{encoded_df_js}}">
                                 <input type="hidden" name="data_encoding_map_js" value="{{ data_encoding_map_js}}">
-                                <input type="submit" value="Submit" class="form-button"> 
+                                <input type="submit" value="Submit" class="form-button input-submit"> 
                         </form>
-                        <H2>{{target_variable}} : </H2>
+                        
+                        <p class="input_display"></p>
+                        <H2 class="prediction_value">{{ target_variable }} : </H2>
+                        <p class="message"></p>
                         <script>
                             $(document).ready(function() {
                                 $('form').on('submit', function(e) {
@@ -268,6 +271,7 @@
                                     },
                                     data: $(this).serialize(),
                                     success: function(response) {
+                                        console.log(response);
                                         features_html = '<H3>Provided features</H3><br>'
                                         var input_features = JSON.parse(response.input_values);
                                         for (var key in input_features) {
@@ -279,20 +283,61 @@
                                         $('input[name="independent_cols"]').val('');
                                         $('.prediction_value').text('{{ target_variable }} : '+response.prediction);
                                         $('.input_display').html(features_html);
+                                        $('.message').html('<a class=model_link href="#trained_models">'+
+                                            'Checkout the trained models<span class="material-symbols-outlined">arrow_downward</span></a>');
+                                        var trained_models_info = ' <H1>Trained Machine Learning Models</H1>';
+                                        trained_models_info += ' <p>We have successfully trained Machine Learning models. '+
+                                            'Below table represets an overview of the trained machine learning models '+
+                                            'and their performance metrics, focusing on the best hyperparameters and '+
+                                            'accuracy of each model. These results are key for understanding '+
+                                            'the effectiveness of the models and for selecting the most appropriate '+
+                                            'model for making reliable predictions.</p> ';
+                                        trained_models_info +=  '<ul>'+
+                                                                    '<li> Hyperparameters - The external settings that you manually define '+ 
+                                                                        'before training the model. These control how the learning '+ 
+                                                                        'process works and are adjusted to improve model performance.'+ 
+                                                                    '</li>'+ 
+                                                                    '<li>'+ 
+                                                                        'Accuracy - Accuracy is the proportion of correctly predicted '+ 
+                                                                        'instances out of the total number of predictions made by the model. '+ 
+                                                                        'It gives you an overall measure of how well the model is '+ 
+                                                                        'performing on the test set.'+ 
+                                                                    '</li>'+ 
+                                                                '</ul>';
+                                        var trained_model_array = JSON.parse(response.trained_model_array);
+                                        trained_models_info += '<table border="1">' +
+                                                                    '<thead>' +
+                                                                        '<tr>' +
+                                                                            '<th>Trained Model</th>' +
+                                                                            '<th>Parameters</th>' +
+                                                                            '<th>Accuracy</th>' +
+                                                                        '</tr>' +
+                                                                    '</thead>' +
+                                                                    '<tbody>';
+                                        for (var i = 0; i < trained_model_array.length; i++) {
+                                            trained_models_info += '<tr>';
+                                            trained_models_info += '<td>' + trained_model_array[i][0] + '</td>'; // Model name
+                                            trained_models_info += '<td>' + JSON.stringify(trained_model_array[i][2]) + '</td>'; // Hyperparameters
+                                            trained_models_info += '<td>' + trained_model_array[i][1] + '</td>'; // Accuracy
+                                            trained_models_info += '</tr>';
+                                        }
+                                        trained_models_info += '</tbody></table>';
+                                        $('#trained_models').html(trained_models_info);                
                                     },
                                     error: function() {
                                         spinner.remove();
                                         $('input[name="independent_cols"]').val('');
                                         alert('An error occurred while predicting the dependent feature');
-                                        
                                     }
                                 });
                             });
                         });
                         </script>  
+                    </div>
                     {% endif%}
                 </div>
-            </div>
+            </div>   
         </div>
-    </div>
+        <div id="trained_models"></div>
+        
 </body> 

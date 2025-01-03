@@ -123,9 +123,13 @@ def get_prediction(request):
         feature_array = np.array(encoded_features).reshape(1, -1)
         trained_model,prediction, best_model = predictive_model(dataframe, dependent_feature, feature_array)
         decoded_prediction = encoding_map[dependent_feature][str(prediction[0])]
+        trained_model_array = []
+        for model_name, model_info in trained_model.items():
+            trained_model_array.append([model_name, model_info[0], model_info[1]])
         response={
                 'input_values': json.dumps(input_values),
-                'prediction':decoded_prediction, 
+                'prediction':decoded_prediction,
+                'trained_model_array': json.dumps(trained_model_array), 
             }
     return JsonResponse(response)
 

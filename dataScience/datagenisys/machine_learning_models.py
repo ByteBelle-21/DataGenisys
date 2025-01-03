@@ -77,10 +77,7 @@ def predictive_model(df, target,  X_input):
             highest_accuracy = accuracy
             best_model = model_object
             best_model_name = model_name
-
         print(f"tuned hpyerparameters for {model_name} = ",parameters)
-        print(f"accuracy for {model_name} :",accuracy)
-    
+        print(f"accuracy for {model_name} :",accuracy)   
     Y_output = best_model.predict(X_input) 
-    print(f"prediction  is = ",Y_output)
     return trained_model, Y_output,best_model_name
