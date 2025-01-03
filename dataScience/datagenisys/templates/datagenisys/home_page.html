@@ -15,7 +15,7 @@
     </div>
     <div class = "main-body">
         <div id="nav-bar">
-            <a class="links" href="#overlapping-content"> Dataset information</a>
+            <a class="links" href="#dataset-information"> Dataset information</a>
             <a class="links" href="#overview-container"> Dataset Overview </a>
             <a class="links" href="#post-cleanup-overview" > Graphs </a>
             <a class="links" href="#model-container" > Predictive Model</a>
@@ -72,6 +72,29 @@
                     </p>
                 </div>
             </div>
+        </div>
+        <div id="dataset-information">
+            <H1>Dataset Information</H1>
+            <p style="width:70%">
+                For this project, I have utilized the <strong>>Alzheimer's Disease Datase</strong>t, 
+                which was sourced from Kaggle. This dataset provides a comprehensive collection 
+                of health-related data for 2,149 patients, with unique Patient IDs. It encompasses a wide 
+                range of information, including demographic details, lifestyle factors, medical history, 
+                clinical measurements, cognitive and functional assessments, symptoms, and Alzheimer's Disease diagnosis.</br> 
+                I would like to acknowledge and thank the creator(s) of this dataset for making it publicly available 
+                and accessible for research purposes.</br>
+                Below is the citation for the Alzheimer's Disease Dataset.</br>
+                <div class="citation">
+                    @misc{rabie_el_kharoua_2024,</br>
+                        title={Alzheimer's Disease Dataset},</br>
+                        url={https://www.kaggle.com/dsv/8668279},</br>
+                        DOI={10.34740/KAGGLE/DSV/8668279},</br>
+                        publisher={Kaggle},</br>
+                        author={Rabie El Kharoua},</br>
+                        year={2024}</br>
+                    }
+                </div>
+            </p>
         </div>
         <div id="overview-container">
             <div class="{% if not got_data or false_target %}initial-overview{%else%}overview{% endif %}">

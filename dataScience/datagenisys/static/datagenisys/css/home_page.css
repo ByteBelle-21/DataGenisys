@@ -28,14 +28,14 @@ html,body{
 }
 
 #nav-bar{
+    position: relative !important;
     display: flex;
     flex-direction: row;
     justify-content:right;
     align-items: center;
     background: black;
-    width: 100%;
-    left: 0%;
-    right: 0%;
+    width: 100% !important;
+    left: 0% !important;
     height: 7vh;
     line-height: 7vh;
     margin-bottom: 2vh;
@@ -227,22 +227,22 @@ html,body{
     width: 60%;
 }
 
-.dataset-button{
-    margin: 2%;
-    background: white;
-    height: 5vw;
-    width: 50vw;
-    border: none;
-    border-radius: 2vw;
-    font-size: 1.5vw;
-    color: rgb(7, 7, 7);
-    text-align: center;
-    line-height: 5vw;
-    cursor: pointer;
+#dataset-information{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    left: 0%;
+    font-size: 1.2vw;
+    padding-left: 6vw !important;
+    padding-top: 3vw !important;
 }
 
-.dataset-button:hover{
-    transform: scale(1.05) ;
+
+.citation{
+    display: inline!important;
+    width:fit-content;
+    padding: 2vw;
+    border: 0.5vw solid black;
 }
 
 #form:checked+.dataset-button + .upload-form {
@@ -286,29 +286,8 @@ html,body{
 .feature-text-box{
     width: 70%
 }
-.form-button{
-    margin: 1vw;
-    padding: 0.7vw;
-    width: 10vw;
-    font-size: 1.1vw;
-    background: #edaa0c;
-    border: none;
-    border-radius: 1.5vw;
-    color: rgb(8, 8, 8);
-    text-align: center;
-    cursor: pointer;
-}
 
-.form-button:hover{ 
-    box-shadow: 0 0 20px black; 
-}
 
-.button-container{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
 
 #overview-container,#post-cleanup-overview{
     width: 100%;
