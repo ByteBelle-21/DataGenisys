@@ -62,9 +62,14 @@ def predictive_model(df, target):
             'params': {'n_neighbors': [5, 10], 'algorithm': ['auto']}
         }
     }
+    trained_model = {}
     for model_name in ml_models.keys():
         model_object = GridSearchCV(estimator=ml_models[model_name]['model'],param_grid=ml_models[model_name]['params'], cv=5)                                  
         model_object.fit(X_train,Y_train)
-        print(f"tuned hpyerparameters for {model_name} = ",model_object.best_params_)
-        print(f"accuracy for {model_name} :",model_object.fit(X_test,Y_test).best_score_)
+        accuracy = model_object.fit(X_test,Y_test).best_score_
+        parameters = model_object.best_params_
+        trained_model[model_name] = [model_object.best_estimator_, accuracy, parameters]
+        print(f"tuned hpyerparameters for {model_name} = ",parameters)
+        print(f"accuracy for {model_name} :",accuracy)
     
+    return trained_model, transform

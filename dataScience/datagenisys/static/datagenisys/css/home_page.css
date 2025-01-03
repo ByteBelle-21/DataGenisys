@@ -484,6 +484,16 @@ td,tr{
 }
 
 
+.trained_models{
+    display: flex;
+    flex-direction: column;
+    left: 0%;
+    font-size: 1.2vw;
+    padding-left: 6vw !important;
+    padding-top: 3vw !important;
+    padding-right: 6vw !important;
+}
+
 
 
 

@@ -51,8 +51,12 @@ def get_dataset(request):
         cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))  
 
     correlation_dict = json.dumps(get_corr(dataframe)) 
+    trained_models,scaler = predictive_model(dataframe,target_variable)
+    trained_model_array = []
+    for model_name, result in trained_models.items():
+        row = [model_name, result[0], result[1], result[2]]
+        trained_model_array.append(row)
 
-    #predictive_model(dataframe,target_variable)
     context = {
         'false_target': false_target,
         'got_data': got_data,
@@ -63,6 +67,8 @@ def get_dataset(request):
         'correlation_dict':correlation_dict,
         'Numeric_categorical_columns':Numeric_categorical_columns,
         'target_variable':target_variable,
+        'trained_model_array': trained_model_array,
+        'scaler':scaler,
     }
     return render(request, 'datagenisys/home_page.html', context)
     

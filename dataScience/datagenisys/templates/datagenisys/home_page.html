@@ -226,6 +226,27 @@
                 {% endif %}
             </div>
         </div>
+        <div class="trained_models">
+            <H1>Trained Machine Learning Models</H1>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th id="table-cell">Trained model</th>
+                        <th id="table-cell">Parameters</th>
+                        <th id="table-cell">Accuracy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for model in trained_model_array %}
+                        <tr>
+                            <td id="table-cell">{{ model.0 }}</td>
+                            <td id="table-cell">{{ model.3 }}</td>
+                            <td id="table-cell">{{ model.2 }}</td>
+                        </tr> 
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         <div id="model-container">
             <div class="predictive-model">
                 <div class="model-info">
