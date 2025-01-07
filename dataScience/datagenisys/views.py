@@ -47,8 +47,7 @@ def get_dataset(request):
         'new_cols' :[]
     }
 
-    dataframe, data_cleaning_steps,Numeric_categorical_columns,data_encoding_map, datetime_cols = category_encoder(dataframe,data_cleaning_steps,Numeric_categorical_columns,datetime_cols)
-    
+    dataframe, data_cleaning_steps,Numeric_categorical_columns,data_encoding_map, datetime_cols = category_encoder(dataframe,data_cleaning_steps,Numeric_categorical_columns,datetime_cols) 
     cleaned_dataset = []
     for col, dtype in dataframe.dtypes.items():
         cleaned_dataset.append((col,dtype,dataframe[col].isnull().sum()))  

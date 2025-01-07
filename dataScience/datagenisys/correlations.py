@@ -1,4 +1,3 @@
-
 def get_corr(df):
     correlation_matrix = df.corr()
     relevant_columns= {}

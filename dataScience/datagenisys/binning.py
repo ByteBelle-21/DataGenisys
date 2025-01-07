@@ -13,7 +13,6 @@ def column_bins(df,categorical_columns,cleaning_steps):
                 earliest_datetime = convert_to_datetime.min()
                 recent_datetime = convert_to_datetime.max()
                 range_datetime = recent_datetime - earliest_datetime
-
                 # if column represents date and time
                 if convert_to_datetime.dt.date.any():
                     if convert_to_datetime.dt.time.any():

@@ -14,37 +14,7 @@ def predictive_model(df, target,  X_input):
     X=transform.fit_transform(X) 
     X_input = transform.fit_transform(X_input)
     X_train, X_test, Y_train, Y_test = train_test_split(X,Y,test_size=0.3, random_state=2) 
-    """
-    ml_models = {
-        'Logistic Regression': {
-            'model' : LogisticRegression(),
-            'params' : {'C':[0.01, 0.1, 1, 10, 100],
-                        'penalty':['l2'],
-                        'solver':['lbfgs', 'liblinear']} 
-            },
-        'Support vector machine': {
-            'model' : SVC(),
-            'params' : {'kernel':('linear', 'rbf','poly','rbf', 'sigmoid'),
-                        'C': np.logspace(-3, 3, 5),
-                        'gamma':np.logspace(-3, 3, 5)}
-            },
-        'Decision tree classifier': {
-            'model' : DecisionTreeClassifier(),
-            'params' : {'criterion': ['gini', 'entropy'],
-                        'splitter': ['best', 'random'],
-                        'max_depth': [2*n for n in range(1,10)],
-                        'max_features': ['auto', 'sqrt'],
-                        'min_samples_leaf': [1, 2, 4],
-                        'min_samples_split': [2, 5, 10]} 
-            },
-        'K-nearest neighbors': {
-            'model' : KNeighborsClassifier(),
-            'params' :{'n_neighbors': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-                       'algorithm': ['auto', 'ball_tree', 'kd_tree', 'brute'],
-                       'p': [1,2]} 
-            }    
-    }   
-   """
+
     ml_models = {
         'Logistic Regression': {
             'model': LogisticRegression(),
